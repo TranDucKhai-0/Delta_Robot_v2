@@ -9,7 +9,7 @@ static void _App_Task_Init() {
     // =================================CORE 0=================================
     // Khởi tạo Task đánh lừa DNS trên Core0 (OTA)
     xTaskCreatePinnedToCore(
-        Wifi_DNS_Server, 
+        Wifi_DNS_Server, // gọi hàm thực thi trên task
         "DNS_Server", 
         2048, 
         NULL, 
