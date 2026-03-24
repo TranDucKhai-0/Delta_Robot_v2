@@ -3,6 +3,12 @@
 #include "freertos/queue.h"
 #include <stdio.h>
 
+// Khởi tạo GPIO cho arm
+#define ARM_1 26
+#define ARM_2 25
+#define ARM_3 33 
+
+
 // Cốt lõi chỉ có tọa độ 3D (x, y, z) để tính toán và điều khiển động cơ
 typedef struct {
     float x;
