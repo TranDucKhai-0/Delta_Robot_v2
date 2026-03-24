@@ -87,14 +87,14 @@ static esp_err_t _Update_Post_Handler(httpd_req_t *req) {
         // ================= HIỆU ỨNG ÁNH SÁNG =================
         // Cứ mỗi cục data ghi thành công, đảo trạng thái LED 1 lần
         led_state = !led_state;
-        gpio_set_level(BLINK_GPIO, led_state);
+        gpio_set_level(_BLINK_GPIO, led_state);
         // =====================================================
     }
 
     // Kết thúc phiên nạp code
     err = esp_ota_end(update_handle);
     if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Lỗi kết thúc OTA (esp_ota_end failed)");
+        ESP_LOGE(P_TAG, "Lỗi kết thúc OTA (esp_ota_end failed)");
         httpd_resp_send_500(req);
         return ESP_FAIL;
     }
@@ -102,16 +102,16 @@ static esp_err_t _Update_Post_Handler(httpd_req_t *req) {
     // Đổi công tắc khởi động sang vùng App mới vừa nạp xong
     err = esp_ota_set_boot_partition(p_update_partition);
     if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Lỗi cài đặt phân vùng khởi động (esp_ota_set_boot_partition failed)");
+        ESP_LOGE(P_TAG, "Lỗi cài đặt phân vùng khởi động (esp_ota_set_boot_partition failed)");
         httpd_resp_send_500(req);
         return ESP_FAIL;
     }
 
-    ESP_LOGI(TAG, "Nạp code thành công! Robot sẽ tự khởi động lại...");
+    ESP_LOGI(P_TAG, "Nạp code thành công! Robot sẽ tự khởi động lại...");
     httpd_resp_sendstr(req, "OK");
     
     // Báo nạp thành công sáng 2s
-    gpio_set_level(BLINK_GPIO, 1);
+    gpio_set_level(_BLINK_GPIO, 1);
 
     // Ngủ 2 giây cho web kịp phản hồi rồi reset chip
     vTaskDelay(pdMS_TO_TICKS(2000));
