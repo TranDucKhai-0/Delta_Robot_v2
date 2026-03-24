@@ -7,12 +7,14 @@
 #include "freertos/task.h"
 
 
+// Hàm khởi tạo các biến toàn cục
 static void _App_Variables_Init() {
     // Khởi tạo các Queue với kích thước phù hợp
     g_queue_udp_to_planner = xQueueCreate(1, sizeof(point_t));  
     g_queue_planner_to_core1 = xQueueCreate(10, sizeof(point_t)); 
 }
 
+// Hàm khởi tạo các task chạy song song trên các core khác nhau
 static void _App_Task_Init() {
     // =================================CORE 0=================================
     // Khởi tạo Task đánh lừa DNS trên Core0 (OTA)
@@ -28,6 +30,7 @@ static void _App_Task_Init() {
 
 }
 
+// Hàm khởi tạo ứng dụng
 void App_init() {
     // Khởi tạo Wifi Access Point với tên "Delta_Robot_v2", mật khẩu "12345678" và cho phép tối đa 1
     Wifi_Init("Delta_Robot_v2", "12345678", 1);
