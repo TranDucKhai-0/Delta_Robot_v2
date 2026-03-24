@@ -75,7 +75,7 @@ void Wifi_Init(const char* WIFI_AP_SSID, const char* WIFI_AP_PASS, uint8_t MAX_S
 
 
 // Task DNS Server để lừa thiết bị
-void Task_DNS_Server(void *pvParameters) {
+void Wifi_DNS_Server(void *pvParameters) {
     char rx_buffer[128];
     struct sockaddr_in server_addr;
     server_addr.sin_family = AF_INET;

@@ -5,16 +5,18 @@
 #include "freertos/task.h"
 
 static void _App_taskInit() {
-    
+    // =================================CORE 0=================================
     // Khởi tạo Task đánh lừa DNS trên Core0 (OTA)
     xTaskCreatePinnedToCore(
-        Task_DNS_Server, 
+        Wifi_DNS_Server, 
         "DNS_Server", 
         2048, 
         NULL, 
         3, // Ưu tiên thấp hơn (3)
         NULL, 
         0);
+    // =================================CORE 1=================================
+
 }
 
 void App_init() {
