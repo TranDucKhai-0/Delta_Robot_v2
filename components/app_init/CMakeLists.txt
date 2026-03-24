@@ -1,6 +1,4 @@
-file(GLOB SOURCES "src/*.c")
-
-idf_component_register(SRCS "${SOURCES}"
+idf_component_register(SRCS "src/app.c"
                     INCLUDE_DIRS "include"
                     REQUIRES    
-                    PRIV_REQUIRES)
+                    PRIV_REQUIRES wifi_app)
