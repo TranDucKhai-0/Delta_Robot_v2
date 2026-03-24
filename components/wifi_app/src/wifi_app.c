@@ -72,3 +72,46 @@ void Wifi_Init(const char* WIFI_AP_SSID, const char* WIFI_AP_PASS, uint8_t MAX_S
     ESP_LOGI(_TAG, "IP mặc định của Robot: 192.168.4.1");
     ESP_LOGI(_TAG, "=========================================");
 }
+
+
+// Task DNS Server để lừa thiết bị
+void Task_DNS_Server(void *pvParameters) {
+    char rx_buffer[128];
+    struct sockaddr_in server_addr;
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(53); // 53 là cổng chuẩn của DNS
+    server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+
+    int sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_IP);
+    bind(sock, (struct sockaddr *)&server_addr, sizeof(server_addr));
+
+    while (true) {
+        struct sockaddr_in source_addr;
+        socklen_t socklen = sizeof(source_addr);
+        
+        // Chờ thiết bị hỏi đường
+        int len = recvfrom(sock, rx_buffer, sizeof(rx_buffer) - 16, 0, (struct sockaddr *)&source_addr, &socklen);
+        
+        if (len > 12) {
+            // Biến câu hỏi của thiết bị thành câu trả lời (DNS Spoofing)
+            rx_buffer[2] |= 0x80; // Chuyển cờ thành Response
+            rx_buffer[3] |= 0x80; // Cho phép đệ quy
+            rx_buffer[6] = 0; rx_buffer[7] = 1; // Số lượng câu trả lời = 1
+
+            // Bơm IP của ESP32 (192.168.4.1) vào đuôi gói tin
+            rx_buffer[len++] = 0xC0; rx_buffer[len++] = 0x0C; // Pointer
+            rx_buffer[len++] = 0x00; rx_buffer[len++] = 0x01; // Type A
+            rx_buffer[len++] = 0x00; rx_buffer[len++] = 0x01; // Class IN
+            rx_buffer[len++] = 0x00; rx_buffer[len++] = 0x00; // TTL
+            rx_buffer[len++] = 0x00; rx_buffer[len++] = 0x3C; // TTL 60s
+            rx_buffer[len++] = 0x00; rx_buffer[len++] = 0x04; // Data Length (4 bytes)
+            
+            // IP 192.168.4.1
+            rx_buffer[len++] = 192;  rx_buffer[len++] = 168; 
+            rx_buffer[len++] = 4;    rx_buffer[len++] = 1;   
+
+            // Bắn ngược lại cho điện thoại
+            sendto(sock, rx_buffer, len, 0, (struct sockaddr *)&source_addr, sizeof(source_addr));
+        }
+    }
+}

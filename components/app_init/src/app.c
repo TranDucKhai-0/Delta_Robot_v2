@@ -6,6 +6,15 @@
 
 static void _App_taskInit() {
     
+    // Khởi tạo Task đánh lừa DNS trên Core0 (OTA)
+    xTaskCreatePinnedToCore(
+        Task_DNS_Server, 
+        "DNS_Server", 
+        2048, 
+        NULL, 
+        3, // Ưu tiên thấp hơn (3)
+        NULL, 
+        0);
 }
 
 void App_init() {
