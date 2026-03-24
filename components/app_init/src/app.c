@@ -2,6 +2,7 @@
 #include "wifi_app.h"
 #include "over_the_air.h"
 #include "globals.h"
+#include "udp_receive.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -17,6 +18,16 @@ static void _App_Variables_Init() {
 // Hàm khởi tạo các task chạy song song trên các core khác nhau
 static void _App_Task_Init() {
     // =================================CORE 0=================================
+    // Khởi tạo Task lắng nghe UDP từ Python trên Core0
+    xTaskCreatePinnedToCore(
+        UDP_Receive_Task, // gọi hàm thực thi trên task
+        "UDP_Receive", 
+        4096, 
+        NULL, 
+        5, // Ưu tiên cao hơn (5)
+        NULL, 
+        0);
+    
     // Khởi tạo Task đánh lừa DNS trên Core0 (OTA)
     xTaskCreatePinnedToCore(
         Wifi_DNS_Server, // gọi hàm thực thi trên task
