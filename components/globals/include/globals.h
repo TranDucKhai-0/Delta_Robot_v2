@@ -16,13 +16,13 @@ typedef struct {
     uint8_t mode;
 
     // Bổ sung toán tử != 
-    bool operator!=(const target_point_t& other) const {
+    bool operator!=(const point_t& other) const {
         return (x != other.x || y != other.y || z != other.z || mode != other.mode);
     }
-} target_point_t;
+} point_t;
 
 typedef struct {
     float arm_1;
     float arm_2;
     float arm_3;
-} current_theta_t;
+} theta_t;
