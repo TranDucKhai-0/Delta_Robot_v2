@@ -20,6 +20,19 @@ void UDP_Receive_Task(void *pvParameters) {
         int sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_IP);
         bind(sock, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
 
+        // Nếu tạo socket thất bại, chờ 1s rồi thử lại
+        if (sock < 0) {
+            vTaskDelay(pdMS_TO_TICKS(500));
+            continue; // Lặp lại vòng while ngoài
+        }
+
+        // kiểm tra lỗi bind, nếu lỗi thì đóng socket và tạo lại từ đầu
+        if (bind(sock, (struct sockaddr *)&dest_addr, sizeof(dest_addr)) < 0) {
+            close(sock);
+            vTaskDelay(pdMS_TO_TICKS(500)); // BẮT BUỘC
+            continue;
+        }
+        
         // đặt thời gian chờ nhận dữ liệu để tránh treo task nếu PC không gửi gì
         struct timeval timeout;
         timeout.tv_sec = 0;
