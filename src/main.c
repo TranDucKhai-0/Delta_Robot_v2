@@ -2,5 +2,5 @@
 
 // Gọi hàm khởi động chương trình
 void app_main() {
-    App_init();
+    App_Init();
 }

@@ -31,14 +31,15 @@ static void _App_Task_Init() {
 }
 
 // Hàm khởi tạo ứng dụng
-void App_init() {
+void App_Init() {
     // Khởi tạo Wifi Access Point với tên "Delta_Robot_v2", mật khẩu "12345678" và cho phép tối đa 1
     Wifi_Init("Delta_Robot_v2", "12345678", 1);
 
     // Khởi tạo Web Server để lắng nghe kết nối nạp OTA
     OTA_Init_Web_Server();
 
-    _App_Variables_Init(); // Khởi tạo các biến toàn cục và Queue
+     // Khởi tạo các biến toàn cục và Queue
+    _App_Variables_Init();
 
     // Khởi tạo các task chạy song song
     _App_Task_Init();
