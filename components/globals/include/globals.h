@@ -1,7 +1,7 @@
 #pragma once
 
 #include "freertos/queue.h"
-#include <stdio.h>
+#include <stdint.h>
 
 // Khởi tạo GPIO cho arm
 #define ARM_1 26
@@ -14,11 +14,6 @@ typedef struct {
     float y;
     float z;
     uint8_t mode;
-
-    // Bổ sung toán tử != 
-    bool operator!=(const point_t& other) const {
-        return (x != other.x || y != other.y || z != other.z || mode != other.mode);
-    }
 } point_t;
 
 typedef struct {
