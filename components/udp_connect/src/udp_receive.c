@@ -3,7 +3,6 @@
 
 #include "lwip/sockets.h"
 
-static const char *P_TAG = "UDP_LISTENER";
 #define UDP_PORT 1234  // Cổng UDP để Python bắn tới
 
 void UDP_Receive_Task(void *pvParameters) {  
@@ -54,6 +53,16 @@ void UDP_Receive_Task(void *pvParameters) {
                     if (ptr != NULL) target.z = strtof(ptr, NULL);
 
                     xQueueOverwrite(g_queue_udp_to_planner, &target);
+                }
+            }
+            else if (len < 0) {
+                // Cực kỳ quan trọng: Phân biệt giữa "Timeout" và "Lỗi mạng"
+                if (errno == EAGAIN || errno == EWOULDBLOCK || errno == 11) {
+                    // Lỗi này là do hết 20ms mà PC chưa gửi gì tới.
+                    continue; 
+                } else {
+                    // Đây là lỗi nặng (rớt Wi-Fi, socket hỏng)
+                    break; // thoast vòng lặp trong để đóng Socket và tạo lại từ đầu
                 }
             }
         }
