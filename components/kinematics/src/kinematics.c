@@ -3,7 +3,7 @@
 
 static const int8_t _PHI[3] = {0, 120, -120}; // deg
 
-static inline float _sqr(float x)
+inline float sqr(float x)
 {
     return x * x; // x^2
 }
@@ -35,8 +35,8 @@ static inline point_t _Passive_Rotation(const point_t *p_point, int8_t phi)
 bool Calculate_Kinematics_Inverse(const robot_object_t *self, point_t *p_point_current, theta_t *p_theta_target){
     if (!self || !p_point_current || !p_theta_target) return false;
     
-    const float RF2 = _sqr(self->RF);
-    const float RE2 = _sqr(self->RE);
+    const float RF2 = sqr(self->RF);
+    const float RE2 = sqr(self->RE);
 
     float *theta_future[3] = {&(p_theta_target->arm_1), &(p_theta_target->arm_2), &(p_theta_target->arm_3)};
 
@@ -46,19 +46,19 @@ bool Calculate_Kinematics_Inverse(const robot_object_t *self, point_t *p_point_c
 
         E_i_arm_i.x += self->A; // Tọa độ Ei tại từng cánh tay
 
-        const float d = sqrtf(_sqr(E_i_arm_i.x - self->A) + _sqr(E_i_arm_i.z));
+        const float d = sqrtf(sqr(E_i_arm_i.x - self->A) + sqr(E_i_arm_i.z));
         // Kiểm tra khoảng cách hợp lệ (tránh chia cho 0)
         if (d < 1e-6f)
             return false;
 
         // Tính toán giao điểm giữa hình cầu (cánh tay dưới re) và vòng tròn (cánh tay trên rf)
-        const float p = (RF2 - RE2 + _sqr(E_i_arm_i.y) + _sqr(d)) / (2 * d);
+        const float p = (RF2 - RE2 + sqr(E_i_arm_i.y) + sqr(d)) / (2 * d);
         
         // check
         if ((p > self->RF) || (p < 0))
             return false;
 
-        const float H = sqrtf(RF2 - _sqr(p));
+        const float H = sqrtf(RF2 - sqr(p));
 
         const point_t P_i = {self->A + p * (E_i_arm_i.x - self->A) / d,
                                 0.0f,
@@ -123,12 +123,12 @@ bool Calculate_Kinematics_Forward(const robot_object_t *self, theta_t *p_theta_c
     const float A1 = 2 * (j_global[0].x - j_global[1].x); 
     const float B1 = 2 * (j_global[1].y);                  
     const float C1 = 2 * (j_global[0].z - j_global[1].z); 
-    const float D1 = _sqr(j_global[0].x) - _sqr(j_global[1].x) - _sqr(j_global[1].y) + _sqr(j_global[0].z) - _sqr(j_global[1].z);
+    const float D1 = sqr(j_global[0].x) - sqr(j_global[1].x) - sqr(j_global[1].y) + sqr(j_global[0].z) - sqr(j_global[1].z);
 
     const float A2 = 2 * (j_global[0].x - j_global[2].x); 
     const float B2 = 2 * (j_global[2].y);                  
     const float C2 = 2 * (j_global[0].z - j_global[2].z); 
-    const float D2 = _sqr(j_global[0].x) - _sqr(j_global[2].x) - _sqr(j_global[2].y) + _sqr(j_global[0].z) - _sqr(j_global[2].z);
+    const float D2 = sqr(j_global[0].x) - sqr(j_global[2].x) - sqr(j_global[2].y) + sqr(j_global[0].z) - sqr(j_global[2].z);
 
     const float denom = A1 * B2 - A2 * B1;
     // Kiểm tra mẫu số (tránh chia cho 0)
@@ -142,11 +142,11 @@ bool Calculate_Kinematics_Forward(const robot_object_t *self, theta_t *p_theta_c
 
     const float A_ = A - j_global[0].x;
 
-    const float b = _sqr(B) + _sqr(D) + 1;
+    const float b = sqr(B) + sqr(D) + 1;
     const float c = 2 * B * A_ + 2 * C * D - 2 * j_global[0].z;
-    const float d = _sqr(A_) + _sqr(C) + _sqr(j_global[0].z) - _sqr(self->RE);
+    const float d = sqr(A_) + sqr(C) + sqr(j_global[0].z) - sqr(self->RE);
 
-    const float delta = _sqr(c) - 4 * b * d;
+    const float delta = sqr(c) - 4 * b * d;
     if (delta < 0)
         return false;
 
