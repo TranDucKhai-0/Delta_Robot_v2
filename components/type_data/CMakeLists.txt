@@ -1,4 +1,4 @@
-idf_component_register(SRCS "src/math_until.c"
+idf_component_register(SRCS 
                     INCLUDE_DIRS "include"
                     REQUIRES    
                     PRIV_REQUIRES)

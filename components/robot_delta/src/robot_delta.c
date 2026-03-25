@@ -1,6 +1,6 @@
 #include "robot_delta.h"
 #include "kinematics.h"
-#include "math_utils.h"
+#include "math_until.h"
 
 
 robot_object_t Robot_Create(const float A, const float RF, const float RE, const float Z_MIN, const float Z_MAX, const float R2, const uint8_t PIN_ARM_1, const uint8_t PIN_ARM_2, const uint8_t PIN_ARM_3){
@@ -35,7 +35,7 @@ static bool _Robot_Is_In_Workspace(const robot_object_t* p_robot, point_t *p_poi
 
 // Hàm này sẽ gọi hàm kinematics_inverse để tính toán góc theta từ điểm mục tiêu, và cập nhật trạng thái của robot.
 static void _Robot_Call_Kinematics_Inverse(robot_object_t* p_robot, point_t *p_point_target){
-    if(p_robot->_has_end_effector_changed) { 
+    if(p_robot->_has_end_effector_target_changed) { 
         // Nếu điểm mục tiêu không nằm trong vùng hoạt động hiệu quả, nó sẽ đặt cờ _has_end_effector_target_changed thành false để báo hiệu rằng điểm đó không hợp lệ.
         if (!_Robot_Is_In_Workspace(p_robot, p_point_target)){
             p_robot->_has_end_effector_target_changed = false;
@@ -52,7 +52,7 @@ static void _Robot_Call_Kinematics_Inverse(robot_object_t* p_robot, point_t *p_p
 
 // Hàm này sẽ gọi hàm kinematics_forward để tính toán vị trí của end-effector từ góc theta mục tiêu
 static void _Robot_Call_Kinematics_Forward(robot_object_t* p_robot, theta_t *p_theta_target){
-    if(_has_theta_target_changed) {
+    if(p_robot->_has_theta_target_changed) {
         if(Calculate_Kinematics_Forward(p_robot, p_theta_target, &(p_robot->_end_effector_current))){
             p_robot->_has_end_effector_current_changed = true; // Đặt cờ này thành true để báo hiệu rằng vị trí end-effector đã thay đổi và cần được cập nhật trong hệ thống điều khiển.
         }

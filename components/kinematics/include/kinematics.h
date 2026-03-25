@@ -1,6 +1,7 @@
 #pragma once
 
 #include "globals.h"
+#include "type_data.h"
 #include "robot_delta.h"
 
 // Động học nghịch

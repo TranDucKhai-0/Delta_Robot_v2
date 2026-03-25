@@ -3,6 +3,7 @@
 #include "over_the_air.h"
 #include "globals.h"
 #include "udp_receive.h"
+#include "type_data.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -10,6 +11,9 @@
 
 // Hàm khởi tạo các biến toàn cục
 static void _App_Variables_Init() {
+    // Khởi tạo biến toàn cục chứa trạng thái của robot
+    *g_p_robot = Robot_Create(60.0f, 120.0f, 260.0f, -335.0f, -268.0, 135.0f, ARM_1, ARM_2, ARM_3);
+
     // Khởi tạo các Queue với kích thước phù hợp
     g_queue_udp_to_planner = xQueueCreate(1, sizeof(point_t));  
     g_queue_planner_to_core1 = xQueueCreate(10, sizeof(point_t)); 

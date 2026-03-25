@@ -1,5 +1,7 @@
 #pragma once
 
+#include "robot_delta.h"
+
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include <stdint.h>
@@ -9,19 +11,8 @@
 #define ARM_2 25
 #define ARM_3 33 
 
-// Cốt lõi chỉ có tọa độ 3D (x, y, z) để tính toán và điều khiển động cơ
-typedef struct {
-    float x;
-    float y;
-    float z;
-    uint8_t mode;
-} point_t;
-
-typedef struct {
-    float arm_1;
-    float arm_2;
-    float arm_3;
-} theta_t;
+// Khai báo biến toàn cục chứa trạng thái của robot
+extern robot_object_t *g_p_robot; 
 
 // Queue 1: Truyền tọa độ thô từ UDP sang thuật toán làm mượt
 extern QueueHandle_t g_queue_udp_to_planner;  

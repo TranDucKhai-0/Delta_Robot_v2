@@ -1,12 +1,14 @@
 #pragma once
 
-#include "globals.h"
+#include "type_data.h"
+
+#include <stdbool.h>
 
 typedef struct robot_delta{
     // parameters of the robot
-    const float A, RF, RE; // mm
+    float A, RF, RE; // mm
     // vùng hoạt động hiệu quả
-    const float Z_MIN, Z_MAX, R2; // R2 là bình phương bán kính hoạt động
+    float Z_MIN, Z_MAX, R2; // R2 là bình phương bán kính hoạt động
 
     // trạng thái hiện tại của robot (điều khiển động cơ bằng góc theta này)
     point_t _end_effector_current; // mm
