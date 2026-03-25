@@ -49,33 +49,43 @@ static void _Robot_Set_PWWM_Duty(arm_object_t *arm, uint32_t duty) {
     ledc_update_duty(LEDC_HIGH_SPEED_MODE, arm->_ledc_channel);
 }
 
-static void _Robot_Write_PIN(float angle_rad) {
+static void _Robot_Write_PIN(arm_object_t *arm, float angle_rad) {
     float safe_angle = _Robot_Calculate_Servo_Angle(angle_rad);
     uint32_t duty = _Robot_Calculate_Duty(safe_angle);
-    _Robot_Set_PWWM_Duty(this, duty);
+    _Robot_Set_PWWM_Duty(arm, duty);
+}
+
+static void _Robot_Write_All_Pins(arm_object_t *arm, theta_t *theta) {
+    _Robot_Write_PIN(&g_p_robot->_arm_1, theta->theta1);
+    _Robot_Write_PIN(&g_p_robot->_arm_2, theta->theta2);
+    _Robot_Write_PIN(&g_p_robot->_arm_3, theta->theta3);
 }
 
 
+// ================================ Task Điều Khiển Động Cơ (Motor Control) =================================
 void Robot_Motor_Control_Task(void *pvParameters){
     // Khởi tạo Timer cho việc xuất xung PWM
     _Robot_Timer_Init();
 
-    // Đưa cánh tay về Home
+    theta_t theta_target = {0, 0, 0};
 
+    // Đưa cánh tay về Home
+    _Robot_Write_All_Pins(g_p_robot, &theta_target);
+
+    // ngừng một thời gian để đảm bảo các cánh tay đã về vị trí home trước khi cho phép các task khác hoạt động
+    vTaskDelay(pdMS_TO_TICKS(2000)); // Đợi 2 giây
 
     // Cho phép các task bị dừng trước đó hoạt động
     if (g_handle_planner != NULL)
         vTaskResume(g_handle_planner);
-    
     if (g_handle_kinematics != NULL)
         vTaskResume(g_handle_kinematics);
 
     // luồng chạy chính của task điều khiển động cơ
-    theta_t theta_target;
     while (1) {
         // Kiểm tra có bộ góc mục tiêu mới nào được gửi từ kinematics đến control hay không, không thì cho task này ngủ
         if (xQueueReceive(g_queue_kinematics_to_control, &theta_target, portMAX_DELAY)) {
-            
+        _Robot_Write_All_Pins(g_p_robot, &theta_target);     
         }
     }
 }
