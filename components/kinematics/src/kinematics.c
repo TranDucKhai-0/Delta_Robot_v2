@@ -1,12 +1,10 @@
 #include "kinematics.h"
+#include "math_utils.h"
+
 #include <math.h>
 
-static const int8_t _PHI[3] = {0, 120, -120}; // deg
 
-inline float sqr(float x)
-{
-    return x * x; // x^2
-}
+static const int8_t _PHI[3] = {0, 120, -120}; // deg
 
 // Xoay hệ tọa độ một góc phi (0, 120, -120) quanh trục Z
 // Dùng để đưa bài toán 3 cánh tay về bài toán 1 cánh tay cục bộ

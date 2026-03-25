@@ -1,5 +1,6 @@
 #include "robot_delta.h"
 #include "kinematics.h"
+#include "math_utils.h"
 
 
 robot_object_t Robot_Create(const float A, const float RF, const float RE, const float Z_MIN, const float Z_MAX, const float R2, const uint8_t PIN_ARM_1, const uint8_t PIN_ARM_2, const uint8_t PIN_ARM_3){

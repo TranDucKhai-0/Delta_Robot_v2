@@ -3,8 +3,6 @@
 #include "globals.h"
 #include "robot_delta.h"
 
-inline float sqr(float x);
-
 // Động học nghịch
 bool Calculate_Kinematics_Inverse(const robot_object_t *self, point_t *p_point_current, theta_t *p_theta_target);
 
