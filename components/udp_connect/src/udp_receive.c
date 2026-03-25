@@ -69,7 +69,7 @@ void UDP_Receive_Task(void *pvParameters) {
                 }
             }
             else if (len < 0) {
-                // Cực kỳ quan trọng: Phân biệt giữa "Timeout" và "Lỗi mạng"
+                // Phân biệt giữa "Timeout" và "Lỗi mạng"
                 if (errno == EAGAIN || errno == EWOULDBLOCK || errno == 11) {
                     // Lỗi này là do hết 20ms mà PC chưa gửi gì tới.
                     continue; 
