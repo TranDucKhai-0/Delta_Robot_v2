@@ -7,3 +7,6 @@ robot_object_t *g_p_robot = NULL; // Khởi tạo con trỏ robot thành NULL đ
 QueueHandle_t g_queue_udp_to_planner = NULL;
 QueueHandle_t g_queue_planner_to_kinematics = NULL;
 QueueHandle_t g_queue_kinematics_to_control = NULL;
+
+TaskHandle_t g_handle_planner = NULL;
+TaskHandle_t g_handle_kinematics = NULL;

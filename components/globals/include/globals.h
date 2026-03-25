@@ -22,3 +22,7 @@ extern QueueHandle_t g_queue_planner_to_kinematics;
 
 // Queue 3: Truyền góc theta đã tính toán từ thuật toán IK sang task điều khiển động cơ
 extern QueueHandle_t g_queue_kinematics_to_control;
+
+// 
+extern TaskHandle_t g_handle_planner;
+extern TaskHandle_t g_handle_kinematics;

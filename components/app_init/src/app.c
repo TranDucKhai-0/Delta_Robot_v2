@@ -42,8 +42,11 @@ static void _App_Task_Init() {
         4096, 
         NULL, 
         4, // Ưu tiên thấp hơn (4)
-        NULL, 
+        &g_handle_planner, 
         0);
+    // tạm dừng Task Planner để chờ Task Control_Servo đưa các cánh tay về vị trí home
+    if (g_handle_planner != NULL) 
+        vTaskSuspend(g_handle_planner);
     
     // Khởi tạo Task đánh lừa DNS trên Core0 (OTA)
     xTaskCreatePinnedToCore(
@@ -66,7 +69,7 @@ static void _App_Task_Init() {
         6, 
         NULL, 
         1);
-        
+
     // Khởi tạo Task xử lý Kinematics trên Core1
     xTaskCreatePinnedToCore(
         Robot_Kinematics_Task, // gọi hàm thực thi trên task
@@ -74,9 +77,11 @@ static void _App_Task_Init() {
         8192, 
         NULL, 
         5, 
-        NULL, 
+        &g_handle_kinematics, 
         1);
-
+    // tạm dừng Task Kinematics để chờ Task Control_Servo đưa các cánh tay về vị trí home
+    if (g_handle_kinematics != NULL) 
+        vTaskSuspend(g_handle_kinematics);
     
 }
 
