@@ -30,8 +30,8 @@ static inline point_t _Passive_Rotation(const point_t *p_point, int8_t phi)
     return p_point_new;
 }
 
-bool Calculate_Kinematics_Inverse(const robot_object_t *self, point_t *p_point_current, theta_t *p_theta_target){
-    if (!self || !p_point_current || !p_theta_target) return false;
+bool Calculate_Kinematics_Inverse(const robot_object_t *self, point_t *p_point_target, theta_t *p_theta_target){
+    if (!self || !p_point_target || !p_theta_target) return false;
     
     const float RF2 = sqr(self->RF);
     const float RE2 = sqr(self->RE);
@@ -40,7 +40,7 @@ bool Calculate_Kinematics_Inverse(const robot_object_t *self, point_t *p_point_c
 
     for (int8_t i = 0; i < 3; i++)
     {
-        point_t E_i_arm_i = _Passive_Rotation(p_point_current, _PHI[i]); // Xoay điểm Eo (End-effector) về hệ tọa độ local của cánh tay thứ i
+        point_t E_i_arm_i = _Passive_Rotation(p_point_target, _PHI[i]); // Xoay điểm Eo mục tiêu (End-effector) về hệ tọa độ local của cánh tay thứ i
 
         E_i_arm_i.x += self->A; // Tọa độ Ei tại từng cánh tay
 
@@ -87,15 +87,15 @@ bool Calculate_Kinematics_Inverse(const robot_object_t *self, point_t *p_point_c
 }
 
 
-bool Calculate_Kinematics_Forward(const robot_object_t *self, theta_t *p_theta_current, point_t *p_point_target){
+bool Calculate_Kinematics_Forward(const robot_object_t *self, theta_t *p_theta_target, point_t *p_point_target){
     // Kểm tra con trỏ null để bảo vệ bộ nhớ
-    if (!self || !p_theta_current || !p_point_target) return false;
+    if (!self || !p_theta_target || !p_point_target) return false;
     
     // Trích xuất các biến từ struct vào mảng để tận dụng vòng lặp
     const float theta_array[3] = {
-        p_theta_current->arm_1,
-        p_theta_current->arm_2,
-        p_theta_current->arm_3
+        p_theta_target->arm_1,
+        p_theta_target->arm_2,
+        p_theta_target->arm_3
     };
     
     // biến chứa tọa độ của các khớp nối trong hệ trục cục bộ và global
