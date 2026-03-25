@@ -2,9 +2,6 @@
 
 #include "globals.h"
 
-// Arm_phi (0, 120, -120) deg (3-DOF)
-static const theta_t _PHI; // rad
-
 typedef struct robot_delta{
     // parameters of the robot
     const float A, RF, RE; // mm
