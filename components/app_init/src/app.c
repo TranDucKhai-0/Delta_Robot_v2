@@ -16,7 +16,8 @@ static void _App_Variables_Init() {
 
     // Khởi tạo các Queue với kích thước phù hợp
     g_queue_udp_to_planner = xQueueCreate(1, sizeof(point_t));  
-    g_queue_planner_to_core1 = xQueueCreate(10, sizeof(point_t)); 
+    g_queue_planner_to_kinematics = xQueueCreate(10, sizeof(point_t)); 
+    g_queue_kinematics_to_control = xQueueCreate(1, sizeof(theta_t));
 }
 
 // Hàm khởi tạo các task chạy song song trên các core khác nhau
@@ -34,15 +35,35 @@ static void _App_Task_Init() {
     
     // Khởi tạo Task đánh lừa DNS trên Core0 (OTA)
     xTaskCreatePinnedToCore(
-        Wifi_DNS_Server, // gọi hàm thực thi trên task
+        Wifi_DNS_Server_Task, // gọi hàm thực thi trên task
         "DNS_Server", 
         2048, 
         NULL, 
         3, // Ưu tiên thấp hơn (3)
         NULL, 
         0);
-    // =================================CORE 1=================================
 
+
+    // =================================CORE 1=================================
+    // Khởi tạo Task xử lý Kinematics trên Core1
+    xTaskCreatePinnedToCore(
+        Robot_Kinematics_Task, // gọi hàm thực thi trên task
+        "Kinematics", 
+        8192, 
+        NULL, 
+        5, 
+        NULL, 
+        1);
+
+    // Khởi tạo task điều khiển động cơ trên Core1
+    xTaskCreatePinnedToCore(
+        Robot_Motor_Control_Task, // gọi hàm thực thi trên task
+        "Control_Servo", 
+        4096, 
+        NULL, 
+        4, 
+        NULL, 
+        1);
 }
 
 // Hàm khởi tạo ứng dụng

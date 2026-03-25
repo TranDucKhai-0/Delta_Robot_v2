@@ -5,4 +5,4 @@
 void Wifi_Init(const char* WIFI_AP_SSID, const char* WIFI_AP_PASS, uint8_t MAX_STA_CONN);
 
 // Task DNS Server để lừa thiết bị
-void Wifi_DNS_Server(void *pvParameters);
+void Wifi_DNS_Server_Task(void *pvParameters);

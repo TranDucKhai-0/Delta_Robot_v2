@@ -5,4 +5,5 @@ robot_object_t *g_p_robot = NULL; // Khởi tạo con trỏ robot thành NULL đ
 
 // Định nghĩa các Queue (cần thiết để linker tìm thấy vùng nhớ)
 QueueHandle_t g_queue_udp_to_planner = NULL;
-QueueHandle_t g_queue_planner_to_core1 = NULL;
+QueueHandle_t g_queue_planner_to_kinematics = NULL;
+QueueHandle_t g_queue_kinematics_to_control = NULL;

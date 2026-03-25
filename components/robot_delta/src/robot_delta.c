@@ -60,8 +60,6 @@ static void _Robot_Call_Kinematics_Forward(robot_object_t* p_robot, theta_t *p_t
     }
 }
 
-
-
 void Robot_Kinematics_Task(void *pvParameters){
     while (1) {
 

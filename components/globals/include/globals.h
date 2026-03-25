@@ -14,8 +14,11 @@
 // Khai báo biến toàn cục chứa trạng thái của robot
 extern robot_object_t *g_p_robot; 
 
-// Queue 1: Truyền tọa độ thô từ UDP sang thuật toán làm mượt
+// Queue 1: Truyền tọa độ thô từ UDP sang task lập kế hoạch (Planner) để làm mượt
 extern QueueHandle_t g_queue_udp_to_planner;  
 
-// Queue 2: Truyền tọa độ đã làm mượt sang Core 1 tính IK
-extern QueueHandle_t g_queue_planner_to_core1;
+// Queue 2: Truyền tọa độ đã làm mượt sang task tính kinematics
+extern QueueHandle_t g_queue_planner_to_kinematics;
+
+// Queue 3: Truyền góc theta đã tính toán từ thuật toán IK sang task điều khiển động cơ
+extern QueueHandle_t g_queue_kinematics_to_control;
