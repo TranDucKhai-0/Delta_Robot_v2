@@ -32,7 +32,7 @@ static inline point_t _Passive_Rotation(const point_t *p_point, int8_t phi)
     return p_point_new;
 }
 
-bool Calculate_Inverse_Kinematics(const robot_object_t *self, point_t *p_point_current, theta_t *p_theta_target){
+bool Calculate_Kinematics_Inverse(const robot_object_t *self, point_t *p_point_current, theta_t *p_theta_target){
     if (!self || !p_point_current || !p_theta_target) return false;
     
     const float RF2 = _sqr(self->RF);
@@ -89,7 +89,7 @@ bool Calculate_Inverse_Kinematics(const robot_object_t *self, point_t *p_point_c
 }
 
 
-bool Calculate_Forward_Kinematics(const robot_object_t *self, theta_t *p_theta_current, point_t *p_point_target){
+bool Calculate_Kinematics_Forward(const robot_object_t *self, theta_t *p_theta_current, point_t *p_point_target){
     // Kểm tra con trỏ null để bảo vệ bộ nhớ
     if (!self || !p_theta_current || !p_point_target) return false;
     
