@@ -11,11 +11,11 @@ robot_object_t Robot_Create(const float A, const float RF, const float RE, const
         .Z_MIN = Z_MIN,
         .Z_MAX = Z_MAX,
         .R2 = R2,
-        ._has_end_effector_current_changed = false,
-        ._has_theta_current_changed = false,
+        ._has_end_effector_current_changed = false, // mặc định chưa có gì thây đổi
+        ._has_theta_current_changed = false, // mặc định chưa có gì thây đổi
 
-        ._has_end_effector_target_changed = false,
-        ._has_theta_target_changed = false
+        ._has_end_effector_target_changed = false, // mặc định chưa có gì thây đổi
+        ._has_theta_target_changed = false // mặc định chưa có gì thây đổi
     };
     return robot;
 }
@@ -57,5 +57,20 @@ static void _Robot_Call_Kinematics_Forward(robot_object_t* p_robot, theta_t *p_t
             p_robot->_has_end_effector_current_changed = true; // Đặt cờ này thành true để báo hiệu rằng vị trí end-effector đã thay đổi và cần được cập nhật trong hệ thống điều khiển.
         }
         p_robot->_has_theta_target_changed = false; // Đặt cờ này thành false sau khi đã dùng bộ gốc mục tiêu, để tránh tính toán lại nếu góc theta không thay đổi.
+    }
+}
+
+
+
+void Robot_Kinematics_Task(void *pvParameters){
+    while (1) {
+
+        vTaskDelay(pdMS_TO_TICKS(20)); // delay 20ms để tránh chiếm CPU quá nhiều
+    }
+}
+
+void Robot_Motor_Control_Task(void *pvParameters){
+    while (1) {
+        vTaskDelay(pdMS_TO_TICKS(20)); // delay 20ms để tránh chiếm CPU quá nhiều
     }
 }
