@@ -12,12 +12,15 @@ typedef struct robot_delta{
     point_t _end_effector_current; // mm
     theta_t _theta_current; // deg
 
+    bool _has_end_effector_current_changed; // end-effector 
+    bool _has_theta_current_changed; // theta
+
     // trạng thái mục tiêu của robot (lưu trữ điểm mục tiêu và góc theta mục tiêu, tính toán động học bằng các biến này)
     point_t _end_effector_target; // mm
     theta_t _theta_target; // deg
 
-    bool _has_end_effector_changed; // end-effector 
-    bool _has_theta_changed; // theta
+    bool _has_end_effector_target_changed; // end-effector 
+    bool _has_theta_target_changed; // theta
 
 } robot_object_t;
 
