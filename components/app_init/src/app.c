@@ -11,8 +11,11 @@
 
 // Hàm khởi tạo các biến toàn cục
 static void _App_Variables_Init() {
-    // Khởi tạo biến toàn cục chứa trạng thái của robot
-    *g_p_robot = Robot_Create(60.0f, 120.0f, 260.0f, -335.0f, -268.0, 135.0f, ARM_1, ARM_2, ARM_3);
+    // Cấp phát bộ nhớ cho biến toàn cục chứa trạng thái của robot
+    g_p_robot = (robot_object_t *)malloc(sizeof(robot_object_t));
+    if (g_p_robot != NULL)
+        // Khởi tạo biến toàn cục chứa trạng thái của robot
+        *g_p_robot = Robot_Create(60.0f, 120.0f, 260.0f, -335.0f, -268.0, 135.0f, ARM_1, ARM_2, ARM_3);
 
     // Khởi tạo các Queue với kích thước phù hợp
     g_queue_udp_to_planner = xQueueCreate(1, sizeof(point_t));  
@@ -32,6 +35,15 @@ static void _App_Task_Init() {
         5, // Ưu tiên cao hơn (5)
         NULL, 
         0);
+
+    xTaskCreatePinnedToCore(
+        Robot_Planner_Task, // gọi hàm thực thi trên task
+        "Planner", 
+        4096, 
+        NULL, 
+        4, // Ưu tiên thấp hơn (4)
+        NULL, 
+        0);
     
     // Khởi tạo Task đánh lừa DNS trên Core0 (OTA)
     xTaskCreatePinnedToCore(
@@ -45,6 +57,16 @@ static void _App_Task_Init() {
 
 
     // =================================CORE 1=================================
+    // Khởi tạo task điều khiển động cơ trên Core1
+    xTaskCreatePinnedToCore(
+        Robot_Motor_Control_Task, // gọi hàm thực thi trên task
+        "Control_Servo", 
+        4096, 
+        NULL, 
+        6, 
+        NULL, 
+        1);
+        
     // Khởi tạo Task xử lý Kinematics trên Core1
     xTaskCreatePinnedToCore(
         Robot_Kinematics_Task, // gọi hàm thực thi trên task
@@ -55,15 +77,7 @@ static void _App_Task_Init() {
         NULL, 
         1);
 
-    // Khởi tạo task điều khiển động cơ trên Core1
-    xTaskCreatePinnedToCore(
-        Robot_Motor_Control_Task, // gọi hàm thực thi trên task
-        "Control_Servo", 
-        4096, 
-        NULL, 
-        4, 
-        NULL, 
-        1);
+    
 }
 
 // Hàm khởi tạo ứng dụng
