@@ -1,5 +1,7 @@
 #pragma once
 
 // Hàm bình phương
-inline float sqr(float x);
+static inline float sqr(float x) {
+    return x * x; // x^2
+}
 
