@@ -2,6 +2,10 @@
 
 #include "type_data.h"
 
+#include "task_kinematics.h"
+#include "task_motor_control.h"
+#include "task_planner.h"
+
 #include <stdbool.h>
 
 typedef struct robot_delta{
@@ -27,9 +31,3 @@ typedef struct robot_delta{
 } robot_object_t;
 
 robot_object_t Robot_Create(const float A, const float RF, const float RE, const float Z_MIN, const float Z_MAX, const float R2, const uint8_t PIN_ARM_1, const uint8_t PIN_ARM_2, const uint8_t PIN_ARM_3);
-
-// Hàm chạy trong 1 task chuyên tính toán động học
-void Robot_Kinematics_Task(void *pvParameters);
-
-// Hàm chạy trong 1 task chuyên xuất xung điều khiển động cơ
-void Robot_Motor_Control_Task(void *pvParameters);

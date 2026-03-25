@@ -59,16 +59,3 @@ static void _Robot_Call_Kinematics_Forward(robot_object_t* p_robot, theta_t *p_t
         p_robot->_has_theta_target_changed = false; // Đặt cờ này thành false sau khi đã dùng bộ gốc mục tiêu, để tránh tính toán lại nếu góc theta không thay đổi.
     }
 }
-
-void Robot_Kinematics_Task(void *pvParameters){
-    while (1) {
-
-        vTaskDelay(pdMS_TO_TICKS(20)); // delay 20ms để tránh chiếm CPU quá nhiều
-    }
-}
-
-void Robot_Motor_Control_Task(void *pvParameters){
-    while (1) {
-        vTaskDelay(pdMS_TO_TICKS(20)); // delay 20ms để tránh chiếm CPU quá nhiều
-    }
-}
