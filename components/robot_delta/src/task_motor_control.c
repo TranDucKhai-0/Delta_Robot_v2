@@ -1,6 +1,13 @@
 #include "task_motor_control.h"
 
 #include "arm.h"
+#include "globals.h"
+#include "type_data.h"
+#include "arm.h"
+
+
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 #include <math.h>
 
 
@@ -55,10 +62,10 @@ static void _Robot_Write_PIN(arm_object_t *arm, float angle_rad) {
     _Robot_Set_PWWM_Duty(arm, duty);
 }
 
-static void _Robot_Write_All_Pins(arm_object_t *arm, theta_t *theta) {
-    _Robot_Write_PIN(&g_p_robot->_arm_1, theta->theta1);
-    _Robot_Write_PIN(&g_p_robot->_arm_2, theta->theta2);
-    _Robot_Write_PIN(&g_p_robot->_arm_3, theta->theta3);
+static void _Robot_Write_All_Pins(robot_object_t *p_robot, theta_t *p_theta) {
+    _Robot_Write_PIN(&p_robot->_arm_1, p_theta->arm_1);
+    _Robot_Write_PIN(&p_robot->_arm_2, p_theta->arm_2);
+    _Robot_Write_PIN(&p_robot->_arm_3, p_theta->arm_3);
 }
 
 

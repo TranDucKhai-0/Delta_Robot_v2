@@ -1,10 +1,10 @@
 #pragma once
 
 #include "type_data.h"
-
 #include "task_kinematics.h"
 #include "task_motor_control.h"
 #include "task_planner.h"
+#include "arm.h"
 
 #include <stdbool.h>
 
@@ -28,6 +28,11 @@ typedef struct robot_delta{
     bool _has_end_effector_target_changed; // end-effector 
     bool _has_theta_target_changed; // theta
 
+    // Cấu trúc dữ liệu cho 3 cánh tay của robot
+    arm_object_t _arm_1;
+    arm_object_t _arm_2;
+    arm_object_t _arm_3;
+
 } robot_object_t;
 
-robot_object_t Robot_Create(const float A, const float RF, const float RE, const float Z_MIN, const float Z_MAX, const float R2, const uint8_t PIN_ARM_1, const uint8_t PIN_ARM_2, const uint8_t PIN_ARM_3);
+robot_object_t Robot_Create(const float A, const float RF, const float RE, const float Z_MIN, const float Z_MAX, const float R2);

@@ -1,6 +1,10 @@
 #include "task_planner.h"
 
 #include "type_data.h"
+#include "globals.h"
+
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 
 #define MODE_HOMING 0
 #define MODE_AUTOMATIC 1
@@ -11,7 +15,7 @@
 
 // =============================Task Planner =============================
 void Robot_Planner_Task(void *pvParameters){
-    point_t point_target = {{0.0f, 0.0f, 0.0f}, 0}; // chứa điểm mới từ PC
+    point_t point_target = {0.0f, 0.0f, 0.0f, 0}; // chứa điểm mới từ PC
     point_t point_current; // chứa điểm trước đó
 
     while (1) {
