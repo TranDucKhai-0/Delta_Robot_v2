@@ -5,9 +5,13 @@
 #include "robot_delta.h"
 #include "kinematics.h"
 #include "math_until.h"
+#include "trajectory.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+
+static trajectory_t _auto_traj = {0}; 
+static bool _is_traj_initialized = false;
 
 
 static void _Robot_Homing(robot_object_t *p_robot) {
@@ -36,8 +40,36 @@ static void _Robot_Homing(robot_object_t *p_robot) {
     }
 }
 
-static void _Robot_Automactic(robot_object_t *p_robot) {
+static void _Robot_Automatic(robot_object_t *p_robot) {
+    if (!s_is_traj_initialized) {
+        _auto_traj.R = 130.0f;
+        _auto_traj.z = -290.0f;
+        _auto_traj.auto_state = 0;
+        
+        // Gọi hàm đúng tên (không có dấu _ ở trước)
+        Start_Line(&_auto_traj, p_robot, _auto_traj.R, 0.0f, _auto_traj.z, 50);
+                    
+        _auto_traj.auto_state = 1;
+        s_is_traj_initialized = true;
+    }
 
+    point_t auto_point;
+    // Gọi hàm đúng tên
+    bool has_next = Get_Next_Point(&_auto_traj, &auto_point);
+
+    if (!has_next) {
+        if (_auto_traj.auto_state == 1 || _auto_traj.auto_state == 2) {
+            // Gọi hàm đúng tên
+            Start_Circle(&_auto_traj, 0.0f, 0.0f, _auto_traj.z, _auto_traj.R, 100);
+            _auto_traj.auto_state = 2;
+        }
+        Get_Next_Point(&_auto_traj, &auto_point);
+    }
+
+    p_robot->end_effector_target = auto_point;
+    p_robot->end_effector_target.mode = 1; 
+    
+    p_robot->has_end_effector_target_changed = true; 
 }
 
 

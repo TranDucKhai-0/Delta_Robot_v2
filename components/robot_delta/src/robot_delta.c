@@ -9,6 +9,7 @@ robot_object_t Robot_Create(const float A, const float RF, const float RE, const
         .Z_MIN = Z_MIN,
         .Z_MAX = Z_MAX,
         .R2 = R2,
+
         ._has_end_effector_current_changed = false, // mặc định chưa có gì thây đổi
         ._has_theta_current_changed = false, // mặc định chưa có gì thây đổi
 
