@@ -13,7 +13,7 @@
 
 // Định nghĩa một cái tên (TAG) để dễ lọc Log trên terminal
 static const char *TAG = "PLANNER"; 
- 
+
 static trajectory_t _auto_traj = {0}; 
 static bool _is_traj_initialized = false;
 
@@ -157,15 +157,14 @@ void Robot_Planner_Task(void *pvParameters){
             _Robot_Homing(g_p_robot); // Thực hiện quá trình homing
         } 
         else if(point_current.mode == MODE_AUTOMATIC){
-            _Robot_Automatic(g_p_robot); // thực hiệnq quá trình tự sinh quỹ đạo theo kịch bản
+            _Robot_Automatic(g_p_robot); // thực hiện quá trình tự sinh quỹ đạo theo kịch bản
         } 
         else if(point_current.mode == MODE_MANUAL){
             _Robot_Manual(g_p_robot, &point_target); // thực hiện quá trình điều khiển thủ công theo tọa độ từ PC
         } 
         else if(point_current.mode == MODE_PICK_AND_PLACE){
-
+            _Robot_Pick_And_Place(g_p_robot, &point_target); // thực hiện quá trình pick and place theo tọa độ từ PC
         }
-
         //Ngừng 20ms để cho task khác trong Core0 hoạt động
         vTaskDelay(pdMS_TO_TICKS(20));
     }
