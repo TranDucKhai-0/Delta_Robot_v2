@@ -7,6 +7,8 @@
 #include "arm.h"
 
 #include <stdbool.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/semphr.h"  // Thư viện chứa định nghĩa SemaphoreHandle_t
 
 typedef struct robot_delta{
     // parameters of the robot

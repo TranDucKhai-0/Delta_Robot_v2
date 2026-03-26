@@ -82,6 +82,11 @@ static void _Robot_Automatic(robot_object_t *p_robot) {
     p_robot->end_effector_target = auto_point;
     p_robot->has_end_effector_target_changed = true; 
     xSemaphoreGive(p_robot->lock); // Unlock sau khi đã cập nhật cờ
+
+    // === IN LOG TỌA ĐỘ VỀ HOME ===
+    ESP_LOGI(TAG, "Đã tín Tọa độ Manual: MODE: %d | X: %.2f | Y: %.2f | Z: %.2f", 
+                          auto_point.mode, auto_point.x, auto_point.y, auto_point.z);
+
     
     // Gửi góc theta nội suy đến Task Kinematics để điều khiển động cơ
     xQueueSend(g_queue_planner_to_kinematics, &auto_point, portMAX_DELAY);

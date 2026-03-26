@@ -12,7 +12,7 @@ void Robot_Kinematics_Task(void *pvParameters){
         // Kiểm tra có điểm mục tiêu mới nào được gửi từ planner đến kinematics hay không, không thì cho task này ngủ
         if (xQueueReceive(g_queue_planner_to_kinematics, &point_target, portMAX_DELAY)) {
             
-            theta_target = Kinematics_Call_Inverse(&g_p_robot, &point_target); // Tính toán góc theta mục tiêu từ điểm mục tiêu và cập nhật vào struct robot
+            theta_target = Kinematics_Call_Inverse(g_p_robot, &point_target); // Tính toán góc theta mục tiêu từ điểm mục tiêu và cập nhật vào struct robot
             
             xQueueSend(g_queue_kinematics_to_control, &theta_target, portMAX_DELAY); // Gửi góc theta mục tiêu đã tính toán được về planner để planner có thể sử dụng trong quá trình lập kế hoạch di chuyển.
 
