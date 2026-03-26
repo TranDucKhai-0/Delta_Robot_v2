@@ -29,6 +29,7 @@ static void _App_Variables_Init() {
     if (g_p_robot != NULL)
         // Khởi tạo biến toàn cục chứa trạng thái của robot
         *g_p_robot = Robot_Create(60.0f, 120.0f, 260.0f, -335.0f, -268.0, 135.0f);
+    g_p_robot->lock = xSemaphoreCreateMutex(); // Tạo mutex để bảo vệ truy cập vào dữ liệu của robot
 
     // Cấp chân GPIO cho 3 cánh tay của robot
     Arm_Init(&g_p_robot->_arm_1, ARM_1);

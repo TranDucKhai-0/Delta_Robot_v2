@@ -14,7 +14,6 @@
 // Định nghĩa một cái tên (TAG) để dễ lọc Log trên terminal
 static const char *TAG = "PLANNER"; 
  
-
 static trajectory_t _auto_traj = {0}; 
 static bool _is_traj_initialized = false;
 
@@ -28,9 +27,15 @@ static void _Robot_Homing(robot_object_t *p_robot) {
     point_t point_target; // chứa kết quả nội suy
 
     for (uint8_t i = 0; i < homing_step; i++) {
+        xSemaphoreTake(p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
+        bool should_break_homing = p_robot->should_break_homing; // Đọc cờ break homing vào biến cục bộ
+        xSemaphoreGive(p_robot->lock); // Unlock sau khi đã cập nhật cờ
+        
         // Kiểm tra cờ break homing trước khi tiếp tục nội suy
-        if(p_robot->should_break_homing) {
+        if(should_break_homing) {
+            xSemaphoreTake(p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
             p_robot->should_break_homing = false; // Reset cờ sau khi đã dùng
+            xSemaphoreGive(p_robot->lock); // Unlock sau khi đã cập nhật cờ
             return; // Thoát khỏi quá trình homing nếu cờ break được đặt
         }
 
@@ -73,9 +78,19 @@ static void _Robot_Automatic(robot_object_t *p_robot) {
         Get_Next_Point(&_auto_traj, &auto_point);
     }
 
+    xSemaphoreTake(p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
     p_robot->end_effector_target = auto_point;
     p_robot->has_end_effector_target_changed = true; 
+    xSemaphoreGive(p_robot->lock); // Unlock sau khi đã cập nhật cờ
+    
+    // Gửi góc theta nội suy đến Task Kinematics để điều khiển động cơ
+    xQueueSend(g_queue_planner_to_kinematics, &auto_point, portMAX_DELAY);
+
+    // Ngừng 20ms để cho Task Kinematics thực hiện lệnh và tránh gửi quá nhanh
+    vTaskDelay(pdMS_TO_TICKS(20));
 }
+
+
 
 
 
@@ -97,7 +112,7 @@ void Robot_Planner_Task(void *pvParameters){
             _Robot_Automatic(g_p_robot); // thực hiệnq quá trình tự sinh quỹ đạo theo kịch bản
         } 
         else if(point_current.mode == MODE_MANUAL){
-
+            _Robot_Manual(g_p_robot, &point_target); // thực hiện quá trình điều khiển thủ công theo tọa độ từ PC
         } 
         else if(point_current.mode == MODE_PICK_AND_PLACE){
 

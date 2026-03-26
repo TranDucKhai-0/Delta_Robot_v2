@@ -14,6 +14,8 @@ typedef struct robot_delta{
     // vùng hoạt động hiệu quả
     float Z_MIN, Z_MAX, R2; // R2 là bình phương bán kính hoạt động
 
+    // Các biến cần lock khi đọc/ghi
+    // =============================================================
     // trạng thái hiện tại của robot (điều khiển động cơ bằng góc theta này)
     point_t end_effector_current; // mm
     theta_t theta_current; // deg
@@ -30,6 +32,8 @@ typedef struct robot_delta{
 
     // cờ ngắt homing
     bool should_break_homing;
+    // ==============================================================
+    SemaphoreHandle_t lock; // mutex để bảo vệ truy cập vào dữ liệu của robot
 
     // Cấu trúc dữ liệu cho 3 cánh tay của robot
     arm_object_t _arm_1;

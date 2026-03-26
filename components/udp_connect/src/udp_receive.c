@@ -82,9 +82,13 @@ void UDP_Receive_Task(void *pvParameters) {
 
                     // Đặt cờ ngắt HOMING
                     if(target.mode == MODE_HOMING) {
+                        xSemaphoreTake(g_p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
                         g_p_robot->should_break_homing = false; // Reset cờ sau khi đã dùng
+                        xSemaphoreGive(g_p_robot->lock); // Unlock sau khi đã cập nhật cờ
                     } else {
+                        xSemaphoreTake(g_p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
                         g_p_robot->should_break_homing = true; // Đặt cờ break homing để nếu đang homing thì dừng lại ngay lập tức
+                        xSemaphoreGive(g_p_robot->lock); // Unlock sau khi đã cập nhật cờ
                     }
 
                     xQueueOverwrite(g_queue_udp_to_planner, &target);
