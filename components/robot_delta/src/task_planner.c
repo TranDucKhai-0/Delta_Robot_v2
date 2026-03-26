@@ -108,7 +108,7 @@ static void _Robot_Pick_And_Place(robot_object_t *p_robot, point_t *p_point_targ
         return; 
     }
 
-    // 2. Thông số thời gian & quỹ đạo (Đại Ca có thể đưa vào tham số hàm nếu cần)
+    // Thông số thời gian & quỹ đạo (Đại Ca có thể đưa vào tham số hàm nếu cần)
     const uint16_t TOTAL_TIME_MS = 1500;    // Tổng thời gian di chuyển
     const uint16_t CYCLE_TIME_MS = 20;      // Chu kỳ nội suy: 20ms (tương đương 50Hz)
     const float CLEARANCE_HEIGHT = p_robot->Z_MAX - p_robot->Z_MIN - 1.0f;   // Độ cao nhấc vật (parabol)
