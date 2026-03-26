@@ -9,6 +9,11 @@
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "esp_log.h" // Thư viện in Log
+
+// Định nghĩa một cái tên (TAG) để dễ lọc Log trên terminal
+static const char *TAG = "PLANNER"; 
+ 
 
 static trajectory_t _auto_traj = {0}; 
 static bool _is_traj_initialized = false;
@@ -31,6 +36,11 @@ static void _Robot_Homing(robot_object_t *p_robot) {
 
         // Nội suy tuyến tính từ theta_current về theta_home
         point_target = Math_Linear_Interpolation(&p_robot->end_effector_current, &point_home, (float)i / homing_step);
+        point_target.mode = 0;
+
+        // === IN LOG TỌA ĐỘ VỀ HOME ===
+        // ESP_LOGI(TAG, "Đã tín Tọa độ về HOME: MODE: %d | X: %.2f | Y: %.2f | Z: %.2f", 
+        //                       point_target.mode, point_target.x, point_target.y, point_target.z);
 
         // Gửi góc theta nội suy đến Task Kinematics để điều khiển động cơ
         xQueueSend(g_queue_planner_to_kinematics, &point_target, portMAX_DELAY);
@@ -46,7 +56,6 @@ static void _Robot_Automatic(robot_object_t *p_robot) {
         _auto_traj.z = -290.0f;
         _auto_traj.auto_state = 0;
         
-        // Gọi hàm đúng tên (không có dấu _ ở trước)
         Start_Line(&_auto_traj, p_robot, _auto_traj.R, 0.0f, _auto_traj.z, 50);
                     
         _auto_traj.auto_state = 1;
@@ -54,12 +63,10 @@ static void _Robot_Automatic(robot_object_t *p_robot) {
     }
 
     point_t auto_point;
-    // Gọi hàm đúng tên
     bool has_next = Get_Next_Point(&_auto_traj, &auto_point);
 
     if (!has_next) {
         if (_auto_traj.auto_state == 1 || _auto_traj.auto_state == 2) {
-            // Gọi hàm đúng tên
             Start_Circle(&_auto_traj, 0.0f, 0.0f, _auto_traj.z, _auto_traj.R, 100);
             _auto_traj.auto_state = 2;
         }
@@ -67,8 +74,6 @@ static void _Robot_Automatic(robot_object_t *p_robot) {
     }
 
     p_robot->end_effector_target = auto_point;
-    p_robot->end_effector_target.mode = 1; 
-    
     p_robot->has_end_effector_target_changed = true; 
 }
 

@@ -2,14 +2,21 @@
 #include "globals.h"
 #include "type_data.h"
 #include "robot_delta.h"
-
 #include "lwip/sockets.h"
+#include "esp_log.h" // Thư viện in Log
+#include <string.h>
 
 #define UDP_PORT 1234  // Cổng UDP để Python bắn tới
+
+// Định nghĩa một cái tên (TAG) để dễ lọc Log trên terminal
+static const char *TAG = "UDP_RX"; 
 
 void UDP_Receive_Task(void *pvParameters) {  
     char rx_buffer[128];
     point_t target;
+
+    // Dọn sạch rác RAM
+    memset(&target, 0, sizeof(point_t));
     
     while (true) {
         // Cấu hình Socket UDP
@@ -20,9 +27,8 @@ void UDP_Receive_Task(void *pvParameters) {
 
         // Tạo socket và bind
         int sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_IP);
-        bind(sock, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
 
-        // Nếu tạo socket thất bại, chờ 1s rồi thử lại
+        // Nếu tạo socket thất bại, chờ 0.5s rồi thử lại
         if (sock < 0) {
             vTaskDelay(pdMS_TO_TICKS(500));
             continue; // Lặp lại vòng while ngoài
@@ -52,6 +58,9 @@ void UDP_Receive_Task(void *pvParameters) {
             
             if (len > 0) {
                 rx_buffer[len] = 0; // Chốt chuỗi để băm
+                
+                // === IN LOG CHUỖI THÔ NHẬN ĐƯỢC ===
+                // ESP_LOGI(TAG, "Đã nhận chuỗi từ PC: %s", rx_buffer);
 
                 // Bắt đầu băm chuỗi rx_buffer bằng dấu phẩy
                 char* ptr = strtok(rx_buffer, ",");
@@ -66,6 +75,10 @@ void UDP_Receive_Task(void *pvParameters) {
                     
                     ptr = strtok(NULL, ",");
                     if (ptr != NULL) target.z = strtof(ptr, NULL);
+
+                    // === IN LOG KẾT QUẢ SAU KHI BĂM CHUỖI ===
+                    // ESP_LOGI(TAG, "Dữ liệu sau khi giải mã -> Mode: %d | X: %.2f | Y: %.2f | Z: %.2f", 
+                    //          target.mode, target.x, target.y, target.z);
 
                     // Đặt cờ ngắt HOMING
                     if(target.mode == MODE_HOMING) {
@@ -84,7 +97,8 @@ void UDP_Receive_Task(void *pvParameters) {
                     continue; 
                 } else {
                     // Đây là lỗi nặng (rớt Wi-Fi, socket hỏng)
-                    break; // thoast vòng lặp trong để đóng Socket và tạo lại từ đầu
+                    ESP_LOGW(TAG, "Lỗi mạng hoặc mất kết nối, đang khởi tạo lại Socket...");
+                    break; // thoát vòng lặp trong để đóng Socket và tạo lại từ đầu
                 }
             }
         }
