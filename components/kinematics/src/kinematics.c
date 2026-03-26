@@ -30,7 +30,20 @@ static inline point_t _Passive_Rotation(const point_t *p_point, int8_t phi)
     return p_point_new;
 }
 
-bool Calculate_Kinematics_Inverse(const robot_object_t *self, point_t *p_point_target, theta_t *p_theta_target){
+// Hàm này sẽ kiểm tra xem điểm mục tiêu có nằm trong vùng hoạt động hiệu quả của robot hay không.
+static bool _Robot_Is_In_Workspace(const robot_object_t* p_robot, point_t *p_point){
+    // kiểm tra độ cao z
+    if (p_point->z > p_robot->Z_MAX || p_point->z < p_robot->Z_MIN)
+        return false;
+
+    // kiểm tra bán kính có bé hơn R
+    if (sqr(p_point->x) + sqr(p_point->y) > p_robot->R2)
+        return false;
+
+    return true;
+}
+
+static bool _Calculate_Kinematics_Inverse(const robot_object_t *self, point_t *p_point_target, theta_t *p_theta_target){
     if (!self || !p_point_target || !p_theta_target) return false;
     
     const float RF2 = sqr(self->RF);
@@ -87,7 +100,7 @@ bool Calculate_Kinematics_Inverse(const robot_object_t *self, point_t *p_point_t
 }
 
 
-bool Calculate_Kinematics_Forward(const robot_object_t *self, theta_t *p_theta_target, point_t *p_point_target){
+static bool _Calculate_Kinematics_Forward(const robot_object_t *self, theta_t *p_theta_target, point_t *p_point_target){
     // Kểm tra con trỏ null để bảo vệ bộ nhớ
     if (!self || !p_theta_target || !p_point_target) return false;
     
@@ -156,4 +169,42 @@ bool Calculate_Kinematics_Forward(const robot_object_t *self, theta_t *p_theta_t
     p_point_target->z = z0;
 
     return true;
+}
+
+
+
+// Hàm này sẽ gọi hàm kinematics_inverse để tính toán góc theta từ điểm mục tiêu, và cập nhật trạng thái của robot.
+theta_t Kinematics_Call_Inverse(robot_object_t* p_robot, point_t *p_point_target){
+    if(p_robot->_has_end_effector_target_changed) { 
+        theta_t theta_target; // chứa kết quả tính toán góc theta mục tiêu từ điểm mục tiêu
+        // Nếu điểm mục tiêu không nằm trong vùng hoạt động hiệu quả, nó sẽ đặt cờ _has_end_effector_target_changed thành false để báo hiệu rằng điểm đó không hợp lệ.
+        if (!_Robot_Is_In_Workspace(p_robot, p_point_target)){}
+
+        else if(_Calculate_Kinematics_Inverse(p_robot, p_point_target, &theta_target)){
+            p_robot->_has_theta_current_changed = true; // Đặt cờ này thành true để báo hiệu rằng góc theta đã thay đổi và cần được cập nhật trong hệ thống điều khiển.
+        }
+
+        p_robot->_has_end_effector_target_changed = false; // Đặt cờ này thành false sau khi đã dùng tọa độ mục tiêu, để tránh tính toán lại nếu điểm mục tiêu không thay đổi.
+        p_robot->theta_target = theta_target; // Cập nhật góc theta mục tiêu vào struct robot để các phần khác của hệ thống có thể truy cập và sử dụng.
+    }
+    // Trả về góc mục tiêu trong robot để nếu ko tính FK dc thì lấy góc cũ
+    return p_robot->theta_target;
+}
+
+
+
+// Hàm này sẽ gọi hàm kinematics_forward để tính toán vị trí của end-effector từ góc theta mục tiêu
+point_t Kinematics_Call_Forward(robot_object_t* p_robot, theta_t *p_theta_target){
+    if(p_robot->_has_theta_target_changed) {
+        point_t point_target; // chứa kết quả tính toán vị trí end-effector từ góc theta mục tiêu
+        
+        if(_Calculate_Kinematics_Forward(p_robot, p_theta_target, &point_target)){
+            p_robot->_has_end_effector_current_changed = true; // Đặt cờ này thành true để báo hiệu rằng vị trí end-effector đã thay đổi và cần được cập nhật trong hệ thống điều khiển.
+        }
+
+        p_robot->_has_theta_target_changed = false; // Đặt cờ này thành false sau khi đã dùng bộ gốc mục tiêu, để tránh tính toán lại nếu góc theta không thay đổi.
+        p_robot->end_effector_target = point_target; // Cập nhật vị trí end-effector vào struct robot để các phần khác của hệ thống có thể truy cập và sử dụng.
+    }
+    // Trả về vị trí end-effector mục tiêu trong robot để nếu ko tính FK dc thì lấy vị trí cũ
+    return p_robot->end_effector_target;
 }
