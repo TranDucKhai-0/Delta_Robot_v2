@@ -9,15 +9,12 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-#define MODE_HOMING 0
-#define MODE_AUTOMATIC 1
-#define MODE_MANUAL 2
-#define MODE_PICK_AND_PLACE 3
 
 static void _Robot_Homing(robot_object_t *p_robot) {
     uint8_t homing_step = 50;
     theta_t theta_home = {0.0f, 0.0f, 0.0f}; // Góc theta home (có thể điều chỉnh tùy theo cấu hình robot)
 
+    p_robot->_has_theta_target_changed = true; // Đặt cờ này thành true để báo hiệu rằng góc theta mục tiêu đã thay đổi và cần được cập nhật trong hệ thống điều khiển.
     point_t point_home = Kinematics_Call_Forward(p_robot, &theta_home); // Tính toán điểm home từ góc theta home
     point_t point_target; // chứa kết quả nội suy
 
@@ -27,7 +24,7 @@ static void _Robot_Homing(robot_object_t *p_robot) {
             p_robot->should_break_homing = false; // Reset cờ sau khi đã dùng
             return; // Thoát khỏi quá trình homing nếu cờ break được đặt
         }
-        
+
         // Nội suy tuyến tính từ theta_current về theta_home
         point_target = Math_Linear_Interpolation(&p_robot->end_effector_current, &point_home, (float)i / homing_step);
 

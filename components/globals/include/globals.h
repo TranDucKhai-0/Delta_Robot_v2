@@ -4,6 +4,12 @@
 #include "freertos/task.h"
 #include <stdint.h>
 
+// MODE
+#define MODE_HOMING 0
+#define MODE_AUTOMATIC 1
+#define MODE_MANUAL 2
+#define MODE_PICK_AND_PLACE 3
+
 typedef struct robot_delta robot_object_t;
 
 // Gán chân GPIO cho arm
