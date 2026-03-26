@@ -103,7 +103,43 @@ static void _Robot_Manual(robot_object_t *p_robot, point_t *p_point_target) {
     xQueueSend(g_queue_planner_to_kinematics, &point_current, portMAX_DELAY);
 }
 
+static void _Robot_Pick_And_Place(robot_object_t *p_robot, point_t *p_point_target) {
+    if (p_robot == NULL || p_point_target == NULL) {
+        return; 
+    }
 
+    // 2. Thông số thời gian & quỹ đạo (Đại Ca có thể đưa vào tham số hàm nếu cần)
+    const uint16_t TOTAL_TIME_MS = 1500;    // Tổng thời gian di chuyển
+    const uint16_t CYCLE_TIME_MS = 20;      // Chu kỳ nội suy: 20ms (tương đương 50Hz)
+    const float CLEARANCE_HEIGHT = p_robot->Z_MAX - p_robot->Z_MIN - 1.0f;   // Độ cao nhấc vật (parabol)
+
+    const uint16_t TOTAL_STEPS = TOTAL_TIME_MS / CYCLE_TIME_MS; // Tính tổng số bước nội suy dựa trên tổng thời gian và chu kỳ nội suy
+
+    // Khởi tạo biến thời gian cho vTaskDelayUntil
+    TickType_t xLastWakeTime = xTaskGetTickCount();
+    const TickType_t xFrequency = pdMS_TO_TICKS(CYCLE_TIME_MS);
+
+    xSemaphoreTake(p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
+    point_t point_current = p_robot->end_effector_current; // Lấy điểm hiện tại của end-effector
+    xSemaphoreGive(p_robot->lock); // Unlock sau khi đã đọc điểm hiện tại
+
+    for (uint16_t i = 0; i <= TOTAL_STEPS; i++) {
+        float t = (float)i / TOTAL_STEPS; 
+
+        // Tính toán và trả về tọa độ tại bước t
+        point_t point_next = Math_Get_Parabolic_Arc_Point(&point_current, p_point_target, CLEARANCE_HEIGHT, t);
+
+        xSemaphoreTake(p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
+        p_robot->end_effector_target = point_next; // Cập nhật điểm mục tiêu    
+        p_robot->has_end_effector_target_changed = true; // Đặt cờ này thành true để báo hiệu rằng điểm mục tiêu đã thay đổi và cần được cập nhật trong hệ thống điều khiển.
+        xSemaphoreGive(p_robot->lock); // Unlock sau khi đã cập nhật cờ
+
+        xQueueSend(g_queue_planner_to_kinematics, &point_next, portMAX_DELAY); // Gửi điểm nội suy đến Task Kinematics để điều khiển động cơ
+
+        // Quản lý thời gian thực
+        vTaskDelayUntil(&xLastWakeTime, xFrequency);
+    }
+}
 
 
 // =============================Task Planner =============================
