@@ -90,6 +90,18 @@ static void _Robot_Automatic(robot_object_t *p_robot) {
     vTaskDelay(pdMS_TO_TICKS(20));
 }
 
+static void _Robot_Manual(robot_object_t *p_robot, point_t *p_point_target) {
+    point_t point_current;
+    Math_Low_Pass_Filter(&point_current, p_point_target); // Áp dụng bộ lọc thông thấp để làm mượt chuyển động
+    
+    xSemaphoreTake(p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
+    p_robot->end_effector_target = point_current;
+    p_robot->has_end_effector_target_changed = true; 
+    xSemaphoreGive(p_robot->lock); // Unlock sau khi đã cập nhật cờ
+
+    // Gửi góc theta nội suy đến Task Kinematics để điều khiển động cơ
+    xQueueSend(g_queue_planner_to_kinematics, &point_current, portMAX_DELAY);
+}
 
 
 
