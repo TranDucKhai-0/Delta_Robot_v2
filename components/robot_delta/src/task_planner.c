@@ -36,6 +36,10 @@ static void _Robot_Homing(robot_object_t *p_robot) {
     }
 }
 
+static void _Robot_Automactic(robot_object_t *p_robot) {
+
+}
+
 
 
 // =============================Task Planner =============================
@@ -50,10 +54,10 @@ void Robot_Planner_Task(void *pvParameters){
         point_current.mode = point_target.mode; // Cập nhật mode mới
 
         if(point_current.mode == MODE_HOMING) {
-            
+            _Robot_Homing(g_p_robot); // Thực hiện quá trình homing
         } 
         else if(point_current.mode == MODE_AUTOMATIC){
-
+            _Robot_Automactic(g_p_robot); // thực hiệnq quá trình tự sinh quỹ đạo theo kịch bản
         } 
         else if(point_current.mode == MODE_MANUAL){
 
