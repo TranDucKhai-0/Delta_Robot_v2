@@ -66,6 +66,13 @@ void UDP_Receive_Task(void *pvParameters) {
                     ptr = strtok(NULL, ",");
                     if (ptr != NULL) target.z = strtof(ptr, NULL);
 
+                    // Đặt cờ ngắt HOMING
+                    if(target.mode == MODE_HOMING) {
+                        g_p_robot->should_break_homing = false; // Reset cờ sau khi đã dùng
+                    } else {
+                        g_p_robot->should_break_homing = true; // Đặt cờ break homing để nếu đang homing thì dừng lại ngay lập tức
+                    }
+
                     xQueueOverwrite(g_queue_udp_to_planner, &target);
                 }
             }
