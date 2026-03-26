@@ -18,7 +18,7 @@ static void _Robot_Homing(robot_object_t *p_robot) {
     uint8_t homing_step = 50;
     theta_t theta_home = {0.0f, 0.0f, 0.0f}; // Góc theta home (có thể điều chỉnh tùy theo cấu hình robot)
 
-    p_robot->_has_theta_target_changed = true; // Đặt cờ này thành true để báo hiệu rằng góc theta mục tiêu đã thay đổi và cần được cập nhật trong hệ thống điều khiển.
+    p_robot->has_theta_target_changed = true; // Đặt cờ này thành true để báo hiệu rằng góc theta mục tiêu đã thay đổi và cần được cập nhật trong hệ thống điều khiển.
     point_t point_home = Kinematics_Call_Forward(p_robot, &theta_home); // Tính toán điểm home từ góc theta home
     point_t point_target; // chứa kết quả nội suy
 
@@ -41,7 +41,7 @@ static void _Robot_Homing(robot_object_t *p_robot) {
 }
 
 static void _Robot_Automatic(robot_object_t *p_robot) {
-    if (!s_is_traj_initialized) {
+    if (!_is_traj_initialized) {
         _auto_traj.R = 130.0f;
         _auto_traj.z = -290.0f;
         _auto_traj.auto_state = 0;
@@ -50,7 +50,7 @@ static void _Robot_Automatic(robot_object_t *p_robot) {
         Start_Line(&_auto_traj, p_robot, _auto_traj.R, 0.0f, _auto_traj.z, 50);
                     
         _auto_traj.auto_state = 1;
-        s_is_traj_initialized = true;
+        _is_traj_initialized = true;
     }
 
     point_t auto_point;
@@ -89,7 +89,7 @@ void Robot_Planner_Task(void *pvParameters){
             _Robot_Homing(g_p_robot); // Thực hiện quá trình homing
         } 
         else if(point_current.mode == MODE_AUTOMATIC){
-            _Robot_Automactic(g_p_robot); // thực hiệnq quá trình tự sinh quỹ đạo theo kịch bản
+            _Robot_Automatic(g_p_robot); // thực hiệnq quá trình tự sinh quỹ đạo theo kịch bản
         } 
         else if(point_current.mode == MODE_MANUAL){
 

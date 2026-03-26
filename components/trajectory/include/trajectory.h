@@ -1,6 +1,7 @@
 #pragma once
 
 #include "type_data.h"
+#include "robot_delta.h"
 #include <stdbool.h> // Cần thiết để xài kiểu bool trả về
 
 typedef struct {

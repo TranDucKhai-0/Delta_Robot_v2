@@ -1,7 +1,8 @@
 #include "math_until.h"
 
+#include <math.h>
 
-inline point_t Math_Linear_Interpolation(const point_t *p_point_current, const point_t *p_point_end, const float step) {
+point_t Math_Linear_Interpolation(const point_t *p_point_current, const point_t *p_point_end, const float step) {
     point_t point_target;
     point_target.x = p_point_current->x + (p_point_end->x - p_point_current->x) * step;
     point_target.y = p_point_current->y + (p_point_end->y - p_point_current->y) * step;
@@ -10,7 +11,7 @@ inline point_t Math_Linear_Interpolation(const point_t *p_point_current, const p
     return point_target;
 }
 
-inline void Low_Pass_Filter(point_t *p_current, const point_t *p_target) {
+void Math_Low_Pass_Filter(point_t *p_current, const point_t *p_target) {
     // hệ số làm mượt, để êm ái khi di chuyển chậm (0.0 -> 1.0)
     const float smooth_factor = 0.4f; 
     
