@@ -1,5 +1,6 @@
 #include "robot_delta.h"
 
+#include "kinematics.h"
 
 robot_object_t Robot_Create(const float A, const float RF, const float RE, const float Z_MIN, const float Z_MAX, const float R2){
     robot_object_t robot = {
@@ -19,4 +20,16 @@ robot_object_t Robot_Create(const float A, const float RF, const float RE, const
         .should_break_homing = false // mặc định không cần ngắt homing
     };
     return robot;
+}
+
+
+// Hàm này chạy khi esp32 vừa khởi động để đặt điểm/góc ban đầu
+void Robot_Setup_Home_Point(robot_object_t *p_robot, theta_t *p_theta_home) {
+    point_t point_home = Kinematics_Call_Forward(p_robot, p_theta_home); // Tính toán điểm home từ góc theta home
+    xSemaphoreTake(p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
+    p_robot->end_effector_current = point_home;
+    p_robot->theta_current = *p_theta_home;
+    p_robot->has_end_effector_current_changed = false; 
+    p_robot->has_theta_current_changed = false;
+    xSemaphoreGive(p_robot->lock); // Unlock sau khi đã cập nhật cờ
 }

@@ -5,6 +5,7 @@
 #include "type_data.h"
 #include "arm.h"
 #include "robot_delta.h"
+#include "kinematics.h"
 
 
 #include "freertos/FreeRTOS.h"
@@ -70,12 +71,14 @@ static void _Robot_Write_All_Pins(robot_object_t *p_robot, theta_t *p_theta) {
 }
 
 
+
 // ================================ Task Điều Khiển Động Cơ (Motor Control) =================================
 void Robot_Motor_Control_Task(void *pvParameters){
     // Khởi tạo Timer cho việc xuất xung PWM
     _Robot_Timer_Init();
 
     theta_t theta_target = {0, 0, 0};
+    Robot_Setup_Home_Point(g_p_robot, &theta_target); // Đưa biến robot về điểm home ban đầu
 
     // Đưa cánh tay về Home
     _Robot_Write_All_Pins(g_p_robot, &theta_target);

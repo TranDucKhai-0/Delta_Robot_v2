@@ -45,3 +45,6 @@ typedef struct robot_delta{
 } robot_object_t;
 
 robot_object_t Robot_Create(const float A, const float RF, const float RE, const float Z_MIN, const float Z_MAX, const float R2);
+
+// Ham này chạy khi esp32 vừa khởi động để đặt điểm/góc ban đầu
+void Robot_Setup_Home_Point(robot_object_t *p_robot, theta_t *p_theta_home);
