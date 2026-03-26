@@ -4,6 +4,7 @@
 #include "globals.h"
 #include "type_data.h"
 #include "arm.h"
+#include "robot_delta.h"
 
 
 #include "freertos/FreeRTOS.h"

@@ -1,10 +1,10 @@
 #pragma once
-
-#include "robot_delta.h"
-
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
+#include "freertos/task.h"
 #include <stdint.h>
+
+typedef struct robot_delta robot_object_t;
 
 // Gán chân GPIO cho arm
 #define ARM_1 26

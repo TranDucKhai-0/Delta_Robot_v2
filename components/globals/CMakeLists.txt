@@ -1,4 +1,4 @@
-idf_component_register(SRCS "src/globals.c"
+idf_component_register(SRCS 
                     INCLUDE_DIRS "include"
-                    REQUIRES  robot_delta
+                    REQUIRES 
                     PRIV_REQUIRES)

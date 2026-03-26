@@ -1,5 +1,6 @@
 #include "udp_receive.h"
 #include "globals.h"
+#include "type_data.h"
 
 #include "lwip/sockets.h"
 
