@@ -10,4 +10,5 @@ static inline float sqr(float x) {
 
 inline point_t Math_Linear_Interpolation(const point_t *p_point_current, const point_t *p_point_end, const float step);
 
+inline void Low_Pass_Filter(point_t *p_current, const point_t *p_target);
 
