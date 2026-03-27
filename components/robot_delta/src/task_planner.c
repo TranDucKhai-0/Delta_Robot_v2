@@ -132,8 +132,18 @@ static void _Robot_Pick_And_Place(robot_object_t *p_robot, point_t *p_point_targ
         return; 
     }
 
-    // Thông số thời gian & quỹ đạo (Đại Ca có thể đưa vào tham số hàm nếu cần)
-    const uint16_t TOTAL_TIME_MS = 1500;    // Tổng thời gian di chuyển
+    xSemaphoreTake(p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
+    point_t point_current = p_robot->end_effector_current; // Lấy điểm hiện tại của end-effector
+    xSemaphoreGive(p_robot->lock); // Unlock sau khi đã đọc điểm hiện tại
+
+    if( point_current.x == p_point_target->x &&
+        point_current.y == p_point_target->y &&
+        point_current.z == p_point_target->z) 
+        return; // Nếu điểm mục tiêu trùng với điểm hiện tại thì không cần thực hiện quá trình pick and place
+    
+
+    // Thông số thời gian & quỹ đạo cho quá trình pick and place
+    const uint16_t TOTAL_TIME_MS = 1000;    // Tổng thời gian di chuyển
     const uint16_t CYCLE_TIME_MS = 20;      // Chu kỳ nội suy: 20ms (tương đương 50Hz)
     const float CLEARANCE_HEIGHT = p_robot->Z_MAX - p_robot->Z_MIN - 1.0f;   // Độ cao nhấc vật (parabol)
 
@@ -142,10 +152,6 @@ static void _Robot_Pick_And_Place(robot_object_t *p_robot, point_t *p_point_targ
     // Khởi tạo biến thời gian cho vTaskDelayUntil
     TickType_t xLastWakeTime = xTaskGetTickCount();
     const TickType_t xFrequency = pdMS_TO_TICKS(CYCLE_TIME_MS);
-
-    xSemaphoreTake(p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
-    point_t point_current = p_robot->end_effector_current; // Lấy điểm hiện tại của end-effector
-    xSemaphoreGive(p_robot->lock); // Unlock sau khi đã đọc điểm hiện tại
 
     for (uint16_t i = 0; i <= TOTAL_STEPS; i++) {
         float t = (float)i / TOTAL_STEPS; 
@@ -177,6 +183,8 @@ void Robot_Planner_Task(void *pvParameters){
     while (1) {
         //Kiểm tra xem có tọa độ mới từ máy tính không (Không có thì lấy điểm cũ)
         xQueueReceive(g_queue_udp_to_planner, &point_target, portMAX_DELAY);
+
+        point_t point_current = point_target; // chứa điểm trước đó
         
         point_current.mode = point_target.mode; // Cập nhật mode mới
 
