@@ -123,7 +123,7 @@ static bool _Calculate_Kinematics_Forward(const robot_object_t *self, theta_t *p
         // Dùng sincosf để tối ưu hiệu suất, hoặc thay bằng sinf()/cosf() nếu compiler không hỗ trợ
         sincosf(theta_array[i], &sin_val, &cos_val);
 
-        j_local[i].x = self->A + self->RF * cos_val;
+        j_local[i].x = self->RF * cos_val;
         j_local[i].y = 0.0f;
         j_local[i].z = self->RF * sin_val;
 
@@ -211,9 +211,10 @@ theta_t Kinematics_Call_Inverse(robot_object_t* p_robot, point_t *p_point_target
 point_t Kinematics_Call_Forward(robot_object_t* p_robot, theta_t *p_theta_target){
     xSemaphoreTake(p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
     bool has_theta_target_changed = p_robot->has_theta_target_changed; // Đọc cờ theta_target_changed vào biến cục bộ
-    point_t point_target = p_robot->end_effector_current; // chứa kết quả tính toán vị trí end-effector từ góc theta mục tiêu
     xSemaphoreGive(p_robot->lock); // Unlock sau khi đã cập nhật cờ
     
+    point_t point_target;
+
     if(has_theta_target_changed) {
         if(_Calculate_Kinematics_Forward(p_robot, p_theta_target, &point_target)){
             xSemaphoreTake(p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot

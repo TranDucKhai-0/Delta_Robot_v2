@@ -21,8 +21,8 @@ void Robot_Kinematics_Task(void *pvParameters){
             
             xQueueSend(g_queue_kinematics_to_control, &theta_target, portMAX_DELAY); // Gửi góc theta mục tiêu đã tính toán được về planner để planner có thể sử dụng trong quá trình lập kế hoạch di chuyển.
 
-            ESP_LOGI(TAG, "Đã tín góc (rad): Arm 1: %.2f | Arm 2: %.2f | Arm 3: %.2f", 
-                          theta_target.arm_1, theta_target.arm_2, theta_target.arm_3);
+            // ESP_LOGI(TAG, "Đã tín góc (rad): Arm 1: %.2f | Arm 2: %.2f | Arm 3: %.2f", 
+            //               theta_target.arm_1, theta_target.arm_2, theta_target.arm_3);
 
             
             xSemaphoreTake(g_p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot

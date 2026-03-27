@@ -2,10 +2,12 @@
 #include <math.h>
 
 void Start_Line(trajectory_t *p_traj, robot_object_t *p_robot, float end_x, float end_y, float end_z, int total_steps) {
+    xSemaphoreTake(p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
     // Tự động lấy vị trí ĐANG ĐỨNG THỰC TẾ của robot làm điểm xuất phát
     p_traj->start_x = p_robot->end_effector_current.x;
     p_traj->start_y = p_robot->end_effector_current.y;
     p_traj->start_z = p_robot->end_effector_current.z;
+    xSemaphoreGive(p_robot->lock); // Unlock sau khi đã cập nhật cờ
 
     // Nạp điểm đến
     p_traj->end_x = end_x;
