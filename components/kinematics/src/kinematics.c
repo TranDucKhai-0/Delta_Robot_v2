@@ -37,7 +37,7 @@ static bool _Robot_Is_In_Workspace(const robot_object_t* p_robot, point_t *p_poi
         return false;
 
     // kiểm tra bán kính có bé hơn R
-    if (sqr(p_point->x) + sqr(p_point->y) > p_robot->R2)
+    if (sqr(p_point->x) + sqr(p_point->y) > sqr(p_robot->R2))
         return false;
 
     return true;
@@ -178,9 +178,9 @@ static bool _Calculate_Kinematics_Forward(const robot_object_t *self, theta_t *p
 theta_t Kinematics_Call_Inverse(robot_object_t* p_robot, point_t *p_point_target){
     xSemaphoreTake(p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
     bool has_end_effector_target_changed = p_robot->has_end_effector_target_changed; // Đọc cờ end_effector_target_changed vào biến cục bộ
+    theta_t theta_target = p_robot->theta_current; // chứa kết quả tính toán góc theta mục tiêu từ điểm mục tiêu
     xSemaphoreGive(p_robot->lock); // Unlock sau khi đã cập nhật cờ
     
-    theta_t theta_target; // chứa kết quả tính toán góc theta mục tiêu từ điểm mục tiêu
 
     if(has_end_effector_target_changed) { 
         // Nếu điểm mục tiêu không nằm trong vùng hoạt động hiệu quả, nó sẽ đặt cờ _has_end_effector_target_changed thành false để báo hiệu rằng điểm đó không hợp lệ.
@@ -191,7 +191,7 @@ theta_t Kinematics_Call_Inverse(robot_object_t* p_robot, point_t *p_point_target
             p_robot->theta_target = theta_target; // Cập nhật góc theta mục tiêu vào struct robot để các phần khác của hệ thống có thể truy cập và sử dụng.
             p_robot->has_theta_target_changed = true; // Đặt cờ này thành true để báo hiệu rằng góc theta mục tiêu đã thay đổi và cần được cập nhật trong hệ thống điều khiển.
             xSemaphoreGive(p_robot->lock); // Unlock sau khi đã cập nhật cờ
-        }
+        } 
         xSemaphoreTake(p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
         p_robot->has_end_effector_target_changed = false; // Đặt cờ này thành false sau khi đã dùng tọa độ mục tiêu, để tránh tính toán lại nếu điểm mục tiêu không thay đổi.
         xSemaphoreGive(p_robot->lock); // Unlock sau khi đã cập nhật cờ
@@ -211,12 +211,10 @@ theta_t Kinematics_Call_Inverse(robot_object_t* p_robot, point_t *p_point_target
 point_t Kinematics_Call_Forward(robot_object_t* p_robot, theta_t *p_theta_target){
     xSemaphoreTake(p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
     bool has_theta_target_changed = p_robot->has_theta_target_changed; // Đọc cờ theta_target_changed vào biến cục bộ
+    point_t point_target = p_robot->end_effector_current; // chứa kết quả tính toán vị trí end-effector từ góc theta mục tiêu
     xSemaphoreGive(p_robot->lock); // Unlock sau khi đã cập nhật cờ
     
-    point_t point_target; // chứa kết quả tính toán vị trí end-effector từ góc theta mục tiêu
-
     if(has_theta_target_changed) {
-        
         if(_Calculate_Kinematics_Forward(p_robot, p_theta_target, &point_target)){
             xSemaphoreTake(p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
             p_robot->end_effector_target = point_target; // Cập nhật vị trí end-effector vào struct robot để các phần khác của hệ thống có thể truy cập và sử dụng.

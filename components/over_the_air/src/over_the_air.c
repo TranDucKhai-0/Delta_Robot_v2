@@ -41,6 +41,13 @@ static esp_err_t _Index_Get_Handler(httpd_req_t *req) {
 
 // Xử lý khi bấm nút "Update Fireware"
 static esp_err_t _Update_Post_Handler(httpd_req_t *req) {
+
+    const esp_partition_t *running = esp_ota_get_running_partition();
+    const esp_partition_t *update = esp_ota_get_next_update_partition(NULL);
+
+    ESP_LOGI(P_TAG, "Đang chạy tại: %s (0x%08"PRIx32")", running->label, running->address);
+    ESP_LOGI(P_TAG, "Sẽ nạp vào: %s (0x%08"PRIx32")", update->label, update->address);
+    
     char buf[1024];
     int received = 0;
     int remaining = req->content_len;

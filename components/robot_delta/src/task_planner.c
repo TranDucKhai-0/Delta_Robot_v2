@@ -22,26 +22,36 @@ static void _Robot_Homing(robot_object_t *p_robot) {
     uint8_t homing_step = 50;
     theta_t theta_home = {0.0f, 0.0f, 0.0f}; // Góc theta home (có thể điều chỉnh tùy theo cấu hình robot)
 
-    p_robot->has_theta_target_changed = true; // Đặt cờ này thành true để báo hiệu rằng góc theta mục tiêu đã thay đổi và cần được cập nhật trong hệ thống điều khiển.
     point_t point_home = Kinematics_Call_Forward(p_robot, &theta_home); // Tính toán điểm home từ góc theta home
     point_t point_target; // chứa kết quả nội suy
+
+    xSemaphoreTake(p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
+    point_t point_current = p_robot->end_effector_current;
+    xSemaphoreGive(p_robot->lock); // Unlock sau khi đã cập nhật cờ
 
     for (uint8_t i = 0; i < homing_step; i++) {
         xSemaphoreTake(p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
         bool should_break_homing = p_robot->should_break_homing; // Đọc cờ break homing vào biến cục bộ
-        xSemaphoreGive(p_robot->lock); // Unlock sau khi đã cập nhật cờ
+        
         
         // Kiểm tra cờ break homing trước khi tiếp tục nội suy
         if(should_break_homing) {
-            xSemaphoreTake(p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
             p_robot->should_break_homing = false; // Reset cờ sau khi đã dùng
             xSemaphoreGive(p_robot->lock); // Unlock sau khi đã cập nhật cờ
             return; // Thoát khỏi quá trình homing nếu cờ break được đặt
         }
+        xSemaphoreGive(p_robot->lock); // Unlock sau khi đã cập nhật cờ
+
 
         // Nội suy tuyến tính từ theta_current về theta_home
-        point_target = Math_Linear_Interpolation(&p_robot->end_effector_current, &point_home, (float)i / homing_step);
+        point_target = Math_Linear_Interpolation(&point_current, &point_home, (float)i / homing_step);
         point_target.mode = 0;
+
+        xSemaphoreTake(p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
+        p_robot->end_effector_target = point_target;
+        p_robot->has_end_effector_target_changed = true; // Đặt cờ này thành true để báo hiệu rằng góc theta mục tiêu đã thay đổi và cần được cập nhật trong hệ thống điều khiển.
+        xSemaphoreGive(p_robot->lock); // Unlock sau khi đã cập nhật cờ
+        
 
         // === IN LOG TỌA ĐỘ VỀ HOME ===
         // ESP_LOGI(TAG, "Đã tín Tọa độ về HOME: MODE: %d | X: %.2f | Y: %.2f | Z: %.2f", 
@@ -107,8 +117,8 @@ static void _Robot_Manual(robot_object_t *p_robot, point_t *p_point_target) {
     p_robot->has_end_effector_target_changed = true; 
     xSemaphoreGive(p_robot->lock); // Unlock sau khi đã cập nhật cờ
 
-    ESP_LOGI(TAG, "Đã tín Tọa độ Manual: MODE: %d | X: %.2f | Y: %.2f | Z: %.2f", 
-                          point_current.mode, point_current.x, point_current.y, point_current.z);
+    // ESP_LOGI(TAG, "Đã tín Tọa độ Manual: MODE: %d | X: %.2f | Y: %.2f | Z: %.2f", 
+    //                       point_current.mode, point_current.x, point_current.y, point_current.z);
 
     // Gửi góc theta nội suy đến Task Kinematics để điều khiển động cơ
     xQueueSend(g_queue_planner_to_kinematics, &point_current, portMAX_DELAY);
@@ -144,6 +154,9 @@ static void _Robot_Pick_And_Place(robot_object_t *p_robot, point_t *p_point_targ
         p_robot->end_effector_target = point_next; // Cập nhật điểm mục tiêu    
         p_robot->has_end_effector_target_changed = true; // Đặt cờ này thành true để báo hiệu rằng điểm mục tiêu đã thay đổi và cần được cập nhật trong hệ thống điều khiển.
         xSemaphoreGive(p_robot->lock); // Unlock sau khi đã cập nhật cờ
+
+        // ESP_LOGI(TAG, "Đã tín Tọa độ Pick and Place: MODE: %d | X: %.2f | Y: %.2f | Z: %.2f", 
+        //                   point_next.mode, point_next.x, point_next.y, point_next.z);
 
         xQueueSend(g_queue_planner_to_kinematics, &point_next, portMAX_DELAY); // Gửi điểm nội suy đến Task Kinematics để điều khiển động cơ
 

@@ -39,7 +39,7 @@ static void _App_Variables_Init() {
     // Khởi tạo các Queue với kích thước phù hợp
     g_queue_udp_to_planner = xQueueCreate(1, sizeof(point_t));  
     g_queue_planner_to_kinematics = xQueueCreate(10, sizeof(point_t)); 
-    g_queue_kinematics_to_control = xQueueCreate(1, sizeof(theta_t));
+    g_queue_kinematics_to_control = xQueueCreate(5, sizeof(theta_t));
 }
 
 // Hàm khởi tạo các task chạy song song trên các core khác nhau
