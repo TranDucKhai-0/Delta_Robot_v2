@@ -17,6 +17,10 @@ typedef struct robot_delta robot_object_t;
 #define ARM_2 25
 #define ARM_3 33 
 
+#define CYCLE_TIME_MS 20.0f // Chu kỳ thời gian cho mỗi bước di chuyển (ms)
+
+#define SPEED_MM_PER_SEC 100.0f // Tốc độ di chuyển max của robot (mm/s)
+
 // Khai báo biến toàn cục chứa trạng thái của robot
 extern robot_object_t *g_p_robot; 
 

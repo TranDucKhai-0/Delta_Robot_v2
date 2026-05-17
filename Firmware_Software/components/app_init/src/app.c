@@ -28,7 +28,7 @@ static void _App_Variables_Init() {
     g_p_robot = (robot_object_t *)malloc(sizeof(robot_object_t));
     if (g_p_robot != NULL)
         // Khởi tạo biến toàn cục chứa trạng thái của robot
-        *g_p_robot = Robot_Create(60.0f, 120.0f, 260.0f, -335.0f, -268.0, 135.0f);
+        *g_p_robot = Robot_Create(60.0f, 120.0f, 275.0f, -350.0f, -280.0, 137.0f);
     g_p_robot->lock = xSemaphoreCreateMutex(); // Tạo mutex để bảo vệ truy cập vào dữ liệu của robot
 
     // Cấp chân GPIO cho 3 cánh tay của robot
@@ -37,7 +37,7 @@ static void _App_Variables_Init() {
     Arm_Init(&g_p_robot->_arm_3, ARM_3);
 
     // Khởi tạo các Queue với kích thước phù hợp
-    g_queue_udp_to_planner = xQueueCreate(1, sizeof(point_t));  
+    g_queue_udp_to_planner = xQueueCreate(1, sizeof(udp_payload_t));  
     g_queue_planner_to_kinematics = xQueueCreate(10, sizeof(point_t)); 
     g_queue_kinematics_to_control = xQueueCreate(5, sizeof(theta_t));
 }
