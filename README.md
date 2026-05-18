@@ -3,6 +3,9 @@ Dự án làm về nghiên cứu động học và thiết kế cơ khí Robot-D
 
 Với các file 3D, bạn hoàn toàn có thể tự chế tạo lại 1 phiên bản Robot giống tôi.
 
+Lệnh clone dự án:
+git clone https://github.com/TranDucKhai-0/Delta_Robot_v2.git
+
 
 Cấu trúc chương trình sẽ điều khiển Robot bằng thông qua Wifi bằng giao thức UDP.
 Bạn có thể sử dụng chương trình điều khiển(Robot_Control_v2.py) của tôi, hoặc tự thiết kế chương trình điều khiển của riêng bản thân với giao thức và gói data tương tự.
