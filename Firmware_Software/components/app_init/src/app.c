@@ -26,10 +26,11 @@ TaskHandle_t g_handle_kinematics = NULL;
 static void _App_Variables_Init() {
     // Cấp phát bộ nhớ cho biến toàn cục chứa trạng thái của robot
     g_p_robot = (robot_object_t *)malloc(sizeof(robot_object_t));
-    if (g_p_robot != NULL)
+    if (g_p_robot != NULL) {
         // Khởi tạo biến toàn cục chứa trạng thái của robot
         *g_p_robot = Robot_Create(60.0f, 120.0f, 275.0f, -350.0f, -280.0, 137.0f);
-    g_p_robot->lock = xSemaphoreCreateMutex(); // Tạo mutex để bảo vệ truy cập vào dữ liệu của robot
+        g_p_robot->lock = xSemaphoreCreateMutex(); // Tạo mutex để bảo vệ truy cập vào dữ liệu của robot
+    }
 
     // Cấp chân GPIO cho 3 cánh tay của robot
     Arm_Init(&g_p_robot->_arm_1, ARM_1);

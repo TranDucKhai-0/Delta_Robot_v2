@@ -7,6 +7,7 @@
 #include "math_until.h"
 #include "trajectory.h"
 #include "execute_orbit.h"
+#include "gripper.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -17,6 +18,10 @@ static const char *TAG = "PLANNER";
 
 static trajectory_t _auto_traj = {0};
 static bool _is_traj_initialized = false;
+
+// Tạo biến quản lý gripper
+gripper_object_t g_gripper = { .GPIO_INDX = GRIPPER, .TIME_DELAY_MS = GRIPPER_TIME_DELAY_MS}; // Cấu hình GPIO và thời gian
+Gripper_Init(&g_gripper, GRIPPER_DEFAULT_STATE); // Khởi tạo gripper với trạng thái nhả
 
 static void _Robot_Homing(robot_object_t *p_robot)
 {
@@ -66,6 +71,9 @@ static void _Robot_Homing(robot_object_t *p_robot)
 
         // Ngừng 20ms để cho Task Kinematics thực hiện lệnh và tránh gửi quá nhanh
         vTaskDelay(pdMS_TO_TICKS(20));
+
+    // Cập nhật lại tọa độ hệ Đề Cát (end_effector_current) đồng bộ với góc theta vừa đưa về Home
+    Robot_Setup_Home_Point(p_robot, &theta_home);
     }
 }
 
@@ -160,7 +168,7 @@ static void _Robot_Pick_And_Place(robot_object_t *p_robot, point_t *p_point_pick
     Execute_Linear_Motion(p_robot, p_B, *p_point_pick, SPEED_MM_PER_SEC, PROFILE_DECEL);
 
     // TODO: BẬT GRIPPER TẠI ĐÂY
-    // vTaskDelay(pdMS_TO_TICKS(500)); 
+    Gripper_Change(&g_gripper); // thây đổi trạng thái gripper
 
     // ------------------------------------------------------------------------
     // CHU TRÌNH 2: TỪ GẮP SANG THẢ (Tăng tốc -> Bay -> Giảm tốc cắm xuống)
@@ -185,7 +193,7 @@ static void _Robot_Pick_And_Place(robot_object_t *p_robot, point_t *p_point_pick
     Execute_Linear_Motion(p_robot, p_B, *p_point_place, SPEED_MM_PER_SEC, PROFILE_DECEL);
 
     // TODO: TẮT GRIPPER TẠI ĐÂY
-    // vTaskDelay(pdMS_TO_TICKS(500));
+    Gripper_Change(&g_gripper); // thây đổi trạng thái gripper
 
     // ------------------------------------------------------------------------
     // CHU TRÌNH 3: TỪ THẢ VỀ LẠI HOME
@@ -205,6 +213,9 @@ void Robot_Planner_Task(void *pvParameters)
 {
     // Sử dụng cấu trúc "Hộp" chứa cả 2 dạng dữ liệu
     udp_payload_t payload = {0}; 
+
+    // Khởi tạo gripper với trạng thái nhả trước khi vào vòng lặp vô tận
+    Gripper_Init(&g_gripper, GRIPPER_DEFAULT_STATE);
 
     while (1)
     {
