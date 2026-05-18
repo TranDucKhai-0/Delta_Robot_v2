@@ -5,7 +5,7 @@
 
 // Cấu trúc dữ liệu cho gripper
 // gripper_object_t name = { .GPIO_INDX = NUM_GPIO, .TIME_DELAY_MS = MS};
-typedef struct {
+typedef struct gripper_delta{
     uint8_t GPIO_INDX; // Chân GPIO điều khiển gripper 
     uint16_t TIME_DELAY_MS; // Thời gian delay cần để gắp được vật khi bật/tắt gripper
     bool is_on; // biến trạng thái của gripper 

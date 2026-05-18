@@ -11,23 +11,31 @@
 #define MODE_PICK_AND_PLACE 3
 
 typedef struct robot_delta robot_object_t;
+typedef struct gripper_delta gripper_object_t;
 
 // Gán chân GPIO cho arm
 #define ARM_1 26
 #define ARM_2 25
-#define ARM_3 33 
+#define ARM_3 33
+
+// -------------------------Gripper-------------------------
+// Gán chân GPIO cho gripper
 #define GRIPPER 4
 
 #define GRIPPER_TIME_DELAY_MS 500 // Thời gian delay để đảm bảo gripper đã kịp gắp/thả được vật trước khi tiếp tục thực hiện các bước tiếp theo (ms)
 
+#define GRIPPER_DEFAULT_STATE false // Trạng thái nhả mặc định của gripper khi khởi động là false
+
+// --------------------------------------------------
 #define CYCLE_TIME_MS 20.0f // Chu kỳ thời gian cho mỗi bước di chuyển (ms)
 
 #define SPEED_MM_PER_SEC 100.0f // Tốc độ di chuyển max của robot (mm/s)
 
-#define GRIPPER_DEFAULT_STATE false // Trạng thái nhả mặc định của gripper khi khởi động là false
 
 // Khai báo biến toàn cục chứa trạng thái của robot
 extern robot_object_t *g_p_robot; 
+
+extern gripper_object_t g_gripper;
 
 // Queue 1: Truyền tọa độ thô từ UDP sang task lập kế hoạch (Planner) để làm mượt
 extern QueueHandle_t g_queue_udp_to_planner;  

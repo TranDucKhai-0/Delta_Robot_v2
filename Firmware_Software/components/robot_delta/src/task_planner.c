@@ -19,9 +19,7 @@ static const char *TAG = "PLANNER";
 static trajectory_t _auto_traj = {0};
 static bool _is_traj_initialized = false;
 
-// Tạo biến quản lý gripper
-gripper_object_t g_gripper = { .GPIO_INDX = GRIPPER, .TIME_DELAY_MS = GRIPPER_TIME_DELAY_MS}; // Cấu hình GPIO và thời gian
-Gripper_Init(&g_gripper, GRIPPER_DEFAULT_STATE); // Khởi tạo gripper với trạng thái nhả
+
 
 static void _Robot_Homing(robot_object_t *p_robot)
 {
