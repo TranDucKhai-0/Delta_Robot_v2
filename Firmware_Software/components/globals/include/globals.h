@@ -16,13 +16,14 @@ typedef struct robot_delta robot_object_t;
 #define ARM_1 26
 #define ARM_2 25
 #define ARM_3 33 
-#define GRIPPER 4
 
-#define GRIPPER_TIME_DELAY_MS 500 // Thời gian delay để đảm bảo gripper đã kịp gắp/thả được vật trước khi tiếp tục thực hiện các bước tiếp theo (ms)
+#define GRIPPER 2   // Chân GPIO cho gripper (điều khiển đóng/mở) (tạm test bằng chân LED)
+ 
+#define GRIPPER_TIME_DELAY_MS 1000 // Thời gian delay để đảm bảo gripper đã kịp gắp/thả được vật trước khi tiếp tục thực hiện các bước tiếp theo (ms)
 
 #define CYCLE_TIME_MS 20.0f // Chu kỳ thời gian cho mỗi bước di chuyển (ms)
 
-#define SPEED_MM_PER_SEC 100.0f // Tốc độ di chuyển max của robot (mm/s)
+#define SPEED_MM_PER_SEC 500.0f // Tốc độ di chuyển max của robot (mm/s)
 
 #define GRIPPER_DEFAULT_STATE false // Trạng thái nhả mặc định của gripper khi khởi động là false
 
