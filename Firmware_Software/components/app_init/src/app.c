@@ -6,12 +6,16 @@
 #include "udp_receive.h"
 #include "type_data.h"
 #include "arm.h"
+#include "gripper.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
 // Khởi tạo biến toàn cục chứa trạng thái của robot
 robot_object_t *g_p_robot = NULL; // Khởi tạo con trỏ robot thành NULL để đảm bảo an toàn bộ nhớ
+
+// Tạo biến quản lý gripper với giá trị
+gripper_object_t g_gripper = { .GPIO_INDX = GRIPPER, .TIME_DELAY_MS = GRIPPER_TIME_DELAY_MS}; // Cấu hình GPIO và thời gian
 
 // Định nghĩa các Queue (cần thiết để linker tìm thấy vùng nhớ)
 QueueHandle_t g_queue_udp_to_planner = NULL;
@@ -36,6 +40,9 @@ static void _App_Variables_Init() {
     Arm_Init(&g_p_robot->_arm_1, ARM_1);
     Arm_Init(&g_p_robot->_arm_2, ARM_2);
     Arm_Init(&g_p_robot->_arm_3, ARM_3);
+
+    // Khởi tạo gripper với trạng thái nhả là GRIPPER_DEFAULT_STATE
+    Gripper_Init(&g_gripper, GRIPPER_DEFAULT_STATE); // Khởi tạo gripper với trạng thái nhả
 
     // Khởi tạo các Queue với kích thước phù hợp
     g_queue_udp_to_planner = xQueueCreate(1, sizeof(udp_payload_t));  
