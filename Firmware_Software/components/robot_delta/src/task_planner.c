@@ -24,16 +24,16 @@ static bool _is_traj_initialized = false;
 static void _Robot_Homing(robot_object_t *p_robot)
 {
     uint8_t homing_step = 50;
-    theta_t theta_home = {0.0f, 0.0f, 0.0f}; // Góc theta home (có thể điều chỉnh tùy theo cấu hình robot)
+    theta_t theta_home = {.arm_1 = 0.0f, .arm_2 = 0.0f, .arm_3 = 0.0f}; // Góc theta home (có thể điều chỉnh tùy theo cấu hình robot)
 
-    point_t point_home = {.x = theta_home.arm_1, .y = theta_home.arm_1, .z = theta_home.arm_1}; // theta home
+    point_t point_home = {.x = theta_home.arm_1, .y = theta_home.arm_2, .z = theta_home.arm_3}; // theta home
     point_t point_target;                                                                       // chứa kết quả nội suy
 
     xSemaphoreTake(p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
     theta_t theta_current = p_robot->theta_current;
     xSemaphoreGive(p_robot->lock); // Unlock sau khi đã cập nhật cờ
 
-    point_t point_current = {.x = theta_current.arm_1, .y = theta_current.arm_1, .z = theta_current.arm_1}; // chứa góc hiện tại
+    point_t point_current = {.x = theta_current.arm_1, .y = theta_current.arm_2, .z = theta_current.arm_3}; // chứa góc hiện tại
 
     for (uint8_t i = 0; i <= homing_step; i++)
     {
