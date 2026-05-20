@@ -11,9 +11,12 @@
 
 static const char *TAG = "UDP_RX"; 
 
+// Khởi tạo -1 để lần đầu tiên nhận được 0 hoặc 1 đều hợp lệ
+static int _last_msg_id = -1; 
+
 void UDP_Receive_Task(void *pvParameters) {  
     char rx_buffer[128];
-    udp_payload_t payload; // Sử dụng struct mới
+    udp_payload_t payload; 
 
     while (true) {
         struct sockaddr_in dest_addr;
@@ -46,41 +49,56 @@ void UDP_Receive_Task(void *pvParameters) {
             
             if (len > 0) {
                 rx_buffer[len] = 0; 
-                memset(&payload, 0, sizeof(udp_payload_t)); // Xóa sạch hộp chứa
+                memset(&payload, 0, sizeof(udp_payload_t));
 
                 char* ptr = strtok(rx_buffer, ",");
                 if (ptr != NULL) {
                     int current_mode = atoi(ptr);
-                    payload.target.mode = current_mode; // Luôn gán mode vào target để Planner đọc được nhánh if
                     
-                    // Xử lý CẤU TRÚC 1 (Mode 0, 1, 2)
-                    if (current_mode == 0 || current_mode == 1 || current_mode == 2) {
-                        if ((ptr = strtok(NULL, ",")) != NULL) payload.target.x = strtof(ptr, NULL);
-                        if ((ptr = strtok(NULL, ",")) != NULL) payload.target.y = strtof(ptr, NULL);
-                        if ((ptr = strtok(NULL, ",")) != NULL) payload.target.z = strtof(ptr, NULL);
-                    }
-                    // Xử lý CẤU TRÚC 2 (Mode 3)
-                    else if (current_mode == 3) {
-                        if ((ptr = strtok(NULL, ",")) != NULL) payload.pick.x = strtof(ptr, NULL);
-                        if ((ptr = strtok(NULL, ",")) != NULL) payload.pick.y = strtof(ptr, NULL);
-                        if ((ptr = strtok(NULL, ",")) != NULL) payload.pick.z = strtof(ptr, NULL);
+                    // LẤY ID TỪ GÓI TIN (Sau chuỗi mode)
+                    ptr = strtok(NULL, ",");
+                    if (ptr != NULL) {
+                        int current_id = atoi(ptr);
                         
-                        if ((ptr = strtok(NULL, ",")) != NULL) payload.place.x = strtof(ptr, NULL);
-                        if ((ptr = strtok(NULL, ",")) != NULL) payload.place.y = strtof(ptr, NULL);
-                        if ((ptr = strtok(NULL, ",")) != NULL) payload.place.z = strtof(ptr, NULL);
-                    }
+                        // Nếu ID trùng với gói tin trước đó -> Đây là gói dự phòng, bỏ qua
+                        if (current_id == _last_msg_id) {
+                            continue; 
+                        }
+                        
+                        // ID mới -> Lưu lại để kiểm tra cho các gói sau
+                        _last_msg_id = current_id;
+                        
+                        payload.target.mode = current_mode; 
+                        
+                        // Xử lý CẤU TRÚC 1 (Mode 0, 1, 2)
+                        if (current_mode == 0 || current_mode == 1 || current_mode == 2) {
+                            if ((ptr = strtok(NULL, ",")) != NULL) payload.target.x = strtof(ptr, NULL);
+                            if ((ptr = strtok(NULL, ",")) != NULL) payload.target.y = strtof(ptr, NULL);
+                            if ((ptr = strtok(NULL, ",")) != NULL) payload.target.z = strtof(ptr, NULL);
+                        }
+                        // Xử lý CẤU TRÚC 2 (Mode 3)
+                        else if (current_mode == 3) {
+                            if ((ptr = strtok(NULL, ",")) != NULL) payload.pick.x = strtof(ptr, NULL);
+                            if ((ptr = strtok(NULL, ",")) != NULL) payload.pick.y = strtof(ptr, NULL);
+                            if ((ptr = strtok(NULL, ",")) != NULL) payload.pick.z = strtof(ptr, NULL);
+                            
+                            if ((ptr = strtok(NULL, ",")) != NULL) payload.place.x = strtof(ptr, NULL);
+                            if ((ptr = strtok(NULL, ",")) != NULL) payload.place.y = strtof(ptr, NULL);
+                            if ((ptr = strtok(NULL, ",")) != NULL) payload.place.z = strtof(ptr, NULL);
+                        }
 
-                    // Xử lý cờ ngắt HOMING giữ nguyên như cũ
-                    xSemaphoreTake(g_p_robot->lock, portMAX_DELAY); 
-                    if(current_mode == 0) {
-                        g_p_robot->should_break_homing = false; 
-                    } else {
-                        g_p_robot->should_break_homing = true; 
-                    }
-                    xSemaphoreGive(g_p_robot->lock); 
+                        // Xử lý cờ ngắt HOMING
+                        xSemaphoreTake(g_p_robot->lock, portMAX_DELAY); 
+                        if(current_mode == 0) {
+                            g_p_robot->should_break_homing = false; 
+                        } else {
+                            g_p_robot->should_break_homing = true; 
+                        }
+                        xSemaphoreGive(g_p_robot->lock); 
 
-                    // Bắn trọn gói payload sang Task Planner
-                    xQueueOverwrite(g_queue_udp_to_planner, &payload);
+                        // Bắn trọn gói payload sang Task Planner
+                        xQueueOverwrite(g_queue_udp_to_planner, &payload);
+                    }
                 }
             }
             else if (len < 0) {
