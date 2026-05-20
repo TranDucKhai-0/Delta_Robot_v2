@@ -2,22 +2,28 @@ import pygame
 import socket
 import math
 
-# ================= CẤU HÌNH MẠNG =================
-UDP_IP = "192.168.4.1" # Địa chỉ IP của ESP32 qua mạng nội bộ
-UDP_PORT = 1234      # Port của ESP32
+# ==============================================================================
+# 1. CẤU HÌNH MẠNG & HỆ THỐNG
+# ==============================================================================
+UDP_IP = "192.168.4.1"
+UDP_PORT = 1234
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.setblocking(False) 
+sock.setblocking(False)
 
-# ================= CẤU HÌNH VÙNG HOẠT ĐỘNG =================
-R_MAX = 137.0      
-Z_MIN = -350.0     
-Z_MAX = -280.0     
+# ==============================================================================
+# 2. CẤU HÌNH ROBOT & GIAO DIỆN
+# ==============================================================================
+R_MAX = 137.0
+Z_MIN = -350.0
+Z_MAX = -280.0
 
-# ================= CẤU HÌNH GIAO DIỆN =================
-WIDTH, HEIGHT = 700, 700  
+WIDTH, HEIGHT = 700, 700
 CENTER = (WIDTH // 2, HEIGHT // 2)
 DRAW_RADIUS = int((min(WIDTH, HEIGHT) // 2) * 0.8)
 
+# ==============================================================================
+# 3. KHỞI TẠO PYGAME
+# ==============================================================================
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Bảng Điều Khiển Delta Robot")
@@ -27,27 +33,46 @@ try:
     font = pygame.font.SysFont("tahoma, segoeui", 20)
     font_large = pygame.font.SysFont("tahoma, segoeui", 24, bold=True)
 except:
-    font = pygame.font.Font(pygame.font.get_default_font(), 20) 
+    font = pygame.font.Font(pygame.font.get_default_font(), 20)
     font_large = pygame.font.Font(pygame.font.get_default_font(), 24)
 
-# ================= TRẠNG THÁI BAN ĐẦU =================
-mode = 0           
-z_step = 5.0       
+# ==============================================================================
+# 4. BIẾN TRẠNG THÁI (STATE) & QUẢN LÝ GÓI TIN UDP
+# ==============================================================================
+mode = 0
+z_step = 5.0
 
-# Tọa độ Mode 2 (Dùng chuột)
-robot_x, robot_y, robot_z = 0.0, 0.0, -300.0   
+# Tọa độ cho Mode 2 (Manual)
+robot_x, robot_y, robot_z = 0.0, 0.0, -300.0
 
-# Tọa độ Mode 3 (Pick & Place - 2 điểm)
+# Tọa độ cho Mode 3 (Pick & Place)
 pick_x, pick_y, pick_z = 0.0, 0.0, -300.0
 place_x, place_y, place_z = 0.0, 0.0, -300.0
 
+# Trạng thái nhập liệu Mode 3
 is_typing = False
 input_text = ""
 error_msg = ""
 
+# --- LOGIC QUẢN LÝ ID VÀ SỐ LẦN GỬI ---
+msg_id = 0
+send_count = 0
+MAX_SEND_TIMES = 10
+
+def trigger_new_command():
+    """Lật ID (0 <-> 1) và đặt lại biến đếm để phát 10 gói tin mới."""
+    global msg_id, send_count
+    msg_id = 1 - msg_id  # Lật giá trị 0 thành 1, 1 thành 0
+    send_count = MAX_SEND_TIMES
+
+# ==============================================================================
+# 5. CÁC HÀM HỖ TRỢ (HELPER FUNCTIONS)
+# ==============================================================================
 def map_mouse_to_robot(mx, my):
+    """Chuyển đổi tọa độ chuột trên màn hình thành tọa độ không gian làm việc của Robot."""
     dx = mx - CENTER[0]
     dy = my - CENTER[1]
+    
     rx = (dx / DRAW_RADIUS) * R_MAX
     ry = -(dy / DRAW_RADIUS) * R_MAX
     
@@ -55,42 +80,60 @@ def map_mouse_to_robot(mx, my):
     if distance > R_MAX:
         rx = (rx / distance) * R_MAX
         ry = (ry / distance) * R_MAX
+        
     return rx, ry
 
+def parse_mode3_input(text):
+    """Xử lý và kiểm tra tính hợp lệ của chuỗi tọa độ nhập vào ở Mode 3."""
+    parts = text.strip().split()
+    if len(parts) < 6:
+        return False, "Lỗi: Cần nhập đủ 6 số (X1 Y1 Z1 X2 Y2 Z2)"
+        
+    try:
+        px, py, pz = float(parts[0]), float(parts[1]), float(parts[2])
+        lx, ly, lz = float(parts[3]), float(parts[4]), float(parts[5])
+        
+        dist_pick = math.sqrt(px**2 + py**2)
+        dist_place = math.sqrt(lx**2 + ly**2)
+        
+        if dist_pick > R_MAX or dist_place > R_MAX:
+            return False, "Lỗi: Điểm gắp/thả vượt ngoài bán kính R_MAX!"
+        if not (Z_MIN <= pz <= Z_MAX) or not (Z_MIN <= lz <= Z_MAX):
+            return False, f"Lỗi: Trục Z phải nằm trong khoảng [{Z_MIN}, {Z_MAX}]!"
+            
+        return True, (px, py, pz, lx, ly, lz)
+    except ValueError:
+        return False, "Lỗi: Chỉ được nhập số thực!"
+
+# Lúc khởi động chương trình, gửi tín hiệu Mode 0 đi 1 lần
+trigger_new_command()
+
+# ==============================================================================
+# 6. VÒNG LẶP CHÍNH (MAIN LOOP)
+# ==============================================================================
 running = True
 while running:
+    # --------------------------------------------------------------------------
+    # A. XỬ LÝ SỰ KIỆN TỪ BÀN PHÍM VÀ CHUỘT
+    # --------------------------------------------------------------------------
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
             
         elif event.type == pygame.KEYDOWN:
+            # -- Đang gõ văn bản trong Mode 3 --
             if mode == 3 and is_typing:
-                if event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER:
-                    try:
-                        parts = input_text.strip().split()
+                if event.key in (pygame.K_RETURN, pygame.K_KP_ENTER):
+                    success, result = parse_mode3_input(input_text)
+                    if success:
+                        pick_x, pick_y, pick_z, place_x, place_y, place_z = result
+                        error_msg = "Đã cập nhật tọa độ GẮP & THẢ thành công!"
+                        is_typing = False
+                        input_text = ""
+                        trigger_new_command() # Phát lệnh Pick & Place
+                    else:
+                        error_msg = result
                         
-                        # --- XỬ LÝ NHẬP LIỆU MODE 3 (Cần 6 tọa độ) ---
-                        if len(parts) >= 6:
-                            px, py, pz = float(parts[0]), float(parts[1]), float(parts[2])
-                            lx, ly, lz = float(parts[3]), float(parts[4]), float(parts[5])
-                            
-                            dist_pick = math.sqrt(px**2 + py**2)
-                            dist_place = math.sqrt(lx**2 + ly**2)
-                            
-                            if dist_pick <= R_MAX and dist_place <= R_MAX and Z_MIN <= pz <= Z_MAX and Z_MIN <= lz <= Z_MAX:
-                                pick_x, pick_y, pick_z = px, py, pz
-                                place_x, place_y, place_z = lx, ly, lz
-                                error_msg = "Đã cập nhật tọa độ GẮP & THẢ thành công!"
-                                is_typing = False
-                                input_text = ""
-                            else:
-                                error_msg = f"Lỗi: Điểm gắp hoặc thả vượt ngoài không gian làm việc!"
-                        else:
-                            error_msg = "Lỗi: Cần nhập đủ 6 số (X1 Y1 Z1 X2 Y2 Z2)"
-                                
-                    except ValueError:
-                        error_msg = "Lỗi: Chỉ được nhập số thực!"
-                    
                 elif event.key == pygame.K_BACKSPACE:
                     input_text = input_text[:-1]
                 elif event.key == pygame.K_ESCAPE:
@@ -99,57 +142,82 @@ while running:
                     if event.unicode in "0123456789- .":
                         input_text += event.unicode
                         error_msg = "" 
+            
+            # -- Phím tắt chuyển đổi Mode --
             else:
-                # Chuyển đổi Mode
-                if event.key in [pygame.K_0, pygame.K_KP0]: mode, is_typing = 0, False
-                elif event.key in [pygame.K_1, pygame.K_KP1]: mode, is_typing = 1, False
-                elif event.key in [pygame.K_2, pygame.K_KP2]: mode, is_typing = 2, False
-                elif event.key in [pygame.K_3, pygame.K_KP3]: mode, is_typing = 3, False
-                elif event.key in [pygame.K_RETURN, pygame.K_KP_ENTER] and mode == 3:
+                if event.key in (pygame.K_0, pygame.K_KP0):
+                    mode, is_typing = 0, False
+                    trigger_new_command()
+                elif event.key in (pygame.K_1, pygame.K_KP1):
+                    mode, is_typing = 1, False
+                    trigger_new_command()
+                elif event.key in (pygame.K_2, pygame.K_KP2):
+                    mode, is_typing = 2, False
+                    trigger_new_command()
+                elif event.key in (pygame.K_3, pygame.K_KP3):
+                    mode, is_typing = 3, False
+                    
+                    # Tự động gán tọa độ Home làm Default khi vào Mode 3
+                    home_z = Z_MAX - 1.0
+                    pick_x, pick_y, pick_z = 0.0, 0.0, home_z
+                    place_x, place_y, place_z = 0.0, 0.0, home_z
+                    error_msg = "Đã tải tọa độ Home mặc định."
+                    trigger_new_command() # Phát lệnh ngay khi chuyển Mode
+                
+                elif event.key in (pygame.K_RETURN, pygame.K_KP_ENTER) and mode == 3:
                     is_typing, input_text, error_msg = True, "", ""
 
+        # -- Xử lý cuộn chuột cho Mode 2 --
         elif event.type == pygame.MOUSEWHEEL:
-            if mode in [2, 3]:
-                if mode == 2:
-                    robot_z += event.y * z_step
-                    if robot_z < Z_MIN: robot_z = Z_MIN
-                    if robot_z > Z_MAX: robot_z = Z_MAX
+            if mode == 2:
+                robot_z += event.y * z_step
+                robot_z = max(Z_MIN, min(robot_z, Z_MAX))
+                trigger_new_command() # Cập nhật Z mới
 
-    # Lấy tọa độ chuột cho Mode 2
+    # Liên tục kiểm tra tọa độ chuột cho Mode 2
     if mode == 2:
         mx, my = pygame.mouse.get_pos()
-        robot_x, robot_y = map_mouse_to_robot(mx, my)
+        new_x, new_y = map_mouse_to_robot(mx, my)
+        # Chỉ cập nhật và phát UDP nếu tọa độ chuột thực sự thay đổi
+        if new_x != robot_x or new_y != robot_y:
+            robot_x, robot_y = new_x, new_y
+            trigger_new_command()
 
-    # ================= GỬI DỮ LIỆU XUỐNG ESP32 =================
-    if mode in [0, 1]:
-        # CẤU TRÚC 1: Chỉ gửi mode
-        msg_send = f"{mode}"
-    elif mode == 2:
-        # CẤU TRÚC 1: Gửi 1 điểm
-        msg_send = f"2,{robot_x:.5f},{robot_y:.5f},{robot_z:.5f}"
-    elif mode == 3:
-        # CẤU TRÚC 2: Gửi trọn gói 2 điểm (Pick và Place)
-        msg_send = f"3,{pick_x:.5f},{pick_y:.5f},{pick_z:.5f},{place_x:.5f},{place_y:.5f},{place_z:.5f}"
-        
-    try:
-        sock.sendto(msg_send.encode('utf-8'), (UDP_IP, UDP_PORT))
-    except BlockingIOError:
-        pass 
+    # --------------------------------------------------------------------------
+    # B. XỬ LÝ ĐÓNG GÓI & GỬI DỮ LIỆU UDP (CHỈ GỬI KHI send_count > 0)
+    # --------------------------------------------------------------------------
+    if send_count > 0:
+        msg_send = ""
+        # NHÉT msg_id VÀO VỊ TRÍ THỨ 2 TRONG CHUỖI CHO TẤT CẢ CÁC MODE
+        if mode in [0, 1]:
+            msg_send = f"{mode},{msg_id}"
+        elif mode == 2:
+            msg_send = f"2,{msg_id},{robot_x:.5f},{robot_y:.5f},{robot_z:.5f}"
+        elif mode == 3:
+            msg_send = f"3,{msg_id},{pick_x:.5f},{pick_y:.5f},{pick_z:.5f},{place_x:.5f},{place_y:.5f},{place_z:.5f}"
 
-    # ================= VẼ GIAO DIỆN LÊN MÀN HÌNH =================
-    screen.fill((30, 30, 30)) 
+        if msg_send:
+            try:
+                sock.sendto(msg_send.encode('utf-8'), (UDP_IP, UDP_PORT))
+                send_count -= 1
+            except BlockingIOError:
+                pass 
+
+    # --------------------------------------------------------------------------
+    # C. CẬP NHẬT GIAO DIỆN MÀN HÌNH (UI)
+    # --------------------------------------------------------------------------
+    screen.fill((30, 30, 30))
     
     pygame.draw.circle(screen, (100, 100, 100), CENTER, DRAW_RADIUS, 2)
     pygame.draw.line(screen, (80, 80, 80), (CENTER[0] - DRAW_RADIUS, CENTER[1]), (CENTER[0] + DRAW_RADIUS, CENTER[1]), 1)
     pygame.draw.line(screen, (80, 80, 80), (CENTER[0], CENTER[1] - DRAW_RADIUS), (CENTER[0], CENTER[1] + DRAW_RADIUS), 1)
     
     if mode == 2:
-        # Vẽ 1 điểm (Mode Manual)
         draw_x = int(CENTER[0] + (robot_x / R_MAX) * DRAW_RADIUS)
         draw_y = int(CENTER[1] - (robot_y / R_MAX) * DRAW_RADIUS)
         pygame.draw.circle(screen, (0, 255, 0), (draw_x, draw_y), 8)
+        
     elif mode == 3:
-        # Vẽ 2 điểm (Mode Pick & Place)
         dx_pick = int(CENTER[0] + (pick_x / R_MAX) * DRAW_RADIUS)
         dy_pick = int(CENTER[1] - (pick_y / R_MAX) * DRAW_RADIUS)
         pygame.draw.circle(screen, (255, 165, 0), (dx_pick, dy_pick), 8)
@@ -158,13 +226,12 @@ while running:
         dy_place = int(CENTER[1] - (place_y / R_MAX) * DRAW_RADIUS)
         pygame.draw.circle(screen, (0, 255, 255), (dx_place, dy_place), 8)
         
-        # Vẽ đường nối nét đứt thể hiện quỹ đạo
         pygame.draw.line(screen, (150, 150, 150), (dx_pick, dy_pick), (dx_place, dy_place), 1)
 
-    # === HIỂN THỊ THÔNG SỐ TEXT ===
+    # Hiển thị text trạng thái
     if mode == 3:
         mode_text, info_color = "PICK & PLACE (Chu trình)", (255, 165, 0)
-        target_display = f"GẮP: ({pick_x:.0f}, {pick_y:.0f}, {pick_z:.0f})  --->  THẢ: ({place_x:.0f}, {place_y:.0f}, {place_z:.0f})"
+        target_display = f"GẮP: ({pick_x:.0f}, {pick_y:.0f}, {pick_z:.0f})   --->   THẢ: ({place_x:.0f}, {place_y:.0f}, {place_z:.0f})"
     elif mode == 2:
         mode_text, info_color = "MANUAL (Theo chuột)", (0, 255, 0)
         target_display = f"Mục tiêu X: {robot_x:.1f}  |  Y: {robot_y:.1f}  |  Z: {robot_z:.1f}"
@@ -174,9 +241,14 @@ while running:
         mode_text, info_color, target_display = "BACK HOME", (255, 100, 100), "Đang giữ vị trí Home" 
 
     screen.blit(font.render(f"MODE: {mode_text} (Bấm 0, 1, 2, 3 để đổi)", True, info_color), (20, 20))
-    screen.blit(font.render(f"[UDP OUT] {target_display}", True, (0, 255, 255)), (20, 50))
+    screen.blit(font.render(f"[UDP OUT] {target_display} | ID Gói: {msg_id}", True, (0, 255, 255)), (20, 50))
     
-    # === KHUNG NHẬP LIỆU BÊN DƯỚI ===
+    # Giao diện thông báo mạng (Dùng để monitor việc spam gói tin)
+    if send_count > 0:
+        screen.blit(font.render(f"Đang đồng bộ lệnh mới... (Còn {send_count} gói)", True, (0, 255, 0)), (WIDTH - 350, 20))
+    else:
+        screen.blit(font.render("Idle (Không gửi mạng)", True, (100, 100, 100)), (WIDTH - 250, 20))
+
     if mode == 3:
         if is_typing:
             pygame.draw.rect(screen, (50, 50, 50), (20, HEIGHT - 100, WIDTH - 40, 40))
