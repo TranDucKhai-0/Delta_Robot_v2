@@ -6,12 +6,16 @@
 #include "udp_receive.h"
 #include "type_data.h"
 #include "arm.h"
+#include "gripper.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
 // Khởi tạo biến toàn cục chứa trạng thái của robot
 robot_object_t *g_p_robot = NULL; // Khởi tạo con trỏ robot thành NULL để đảm bảo an toàn bộ nhớ
+
+// Tạo biến quản lý gripper với giá trị
+gripper_object_t g_gripper = { .GPIO_INDX = GRIPPER, .TIME_DELAY_MS = GRIPPER_TIME_DELAY_MS}; // Cấu hình GPIO và thời gian
 
 // Định nghĩa các Queue (cần thiết để linker tìm thấy vùng nhớ)
 QueueHandle_t g_queue_udp_to_planner = NULL;
@@ -26,18 +30,22 @@ TaskHandle_t g_handle_kinematics = NULL;
 static void _App_Variables_Init() {
     // Cấp phát bộ nhớ cho biến toàn cục chứa trạng thái của robot
     g_p_robot = (robot_object_t *)malloc(sizeof(robot_object_t));
-    if (g_p_robot != NULL)
+    if (g_p_robot != NULL) {
         // Khởi tạo biến toàn cục chứa trạng thái của robot
-        *g_p_robot = Robot_Create(60.0f, 120.0f, 260.0f, -335.0f, -268.0, 135.0f);
-    g_p_robot->lock = xSemaphoreCreateMutex(); // Tạo mutex để bảo vệ truy cập vào dữ liệu của robot
+        *g_p_robot = Robot_Create(60.0f, 120.0f, 275.0f, -350.0f, -280.0, 137.0f);
+        g_p_robot->lock = xSemaphoreCreateMutex(); // Tạo mutex để bảo vệ truy cập vào dữ liệu của robot
+    }
 
     // Cấp chân GPIO cho 3 cánh tay của robot
     Arm_Init(&g_p_robot->_arm_1, ARM_1);
     Arm_Init(&g_p_robot->_arm_2, ARM_2);
     Arm_Init(&g_p_robot->_arm_3, ARM_3);
 
+    // Khởi tạo gripper với trạng thái nhả là GRIPPER_DEFAULT_STATE
+    Gripper_Init(&g_gripper, GRIPPER_DEFAULT_STATE); // Khởi tạo gripper với trạng thái nhả
+
     // Khởi tạo các Queue với kích thước phù hợp
-    g_queue_udp_to_planner = xQueueCreate(1, sizeof(point_t));  
+    g_queue_udp_to_planner = xQueueCreate(1, sizeof(udp_payload_t));  
     g_queue_planner_to_kinematics = xQueueCreate(10, sizeof(point_t)); 
     g_queue_kinematics_to_control = xQueueCreate(5, sizeof(theta_t));
 }

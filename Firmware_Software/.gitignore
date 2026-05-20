@@ -1,0 +1,4 @@
+.pio
+.vscode/
+.esp32dev
+.DS_Store

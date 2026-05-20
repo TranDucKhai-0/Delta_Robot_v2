@@ -16,7 +16,20 @@ void Robot_Kinematics_Task(void *pvParameters){
     while (1) {
         // Kiểm tra có điểm mục tiêu mới nào được gửi từ planner đến kinematics hay không, không thì cho task này ngủ
         if (xQueueReceive(g_queue_planner_to_kinematics, &point_target, portMAX_DELAY)) {
+
+            // kiểm tra điểm mục tiêu có bị trùng điểm hiện tại không
+            xSemaphoreTake(g_p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
+            if(point_target.x == g_p_robot->end_effector_current.x &&
+               point_target.y == g_p_robot->end_effector_current.y &&
+               point_target.z == g_p_robot->end_effector_current.z) {
+                
+                g_p_robot->has_end_effector_target_changed = false;
+                xSemaphoreGive(g_p_robot->lock); // Unlock sau khi đã cập nhật cờ
+                continue; // bỏ qua vòng lặp này nếu điểm mục tiêu trùng với điểm hiện tại
+            }
+            xSemaphoreGive(g_p_robot->lock); // Unlock sau khi đã cập nhật cờ
             
+
             theta_target = Kinematics_Call_Inverse(g_p_robot, &point_target); // Tính toán góc theta mục tiêu từ điểm mục tiêu và cập nhật vào struct robot
             
             xQueueSend(g_queue_kinematics_to_control, &theta_target, portMAX_DELAY); // Gửi góc theta mục tiêu đã tính toán được về planner để planner có thể sử dụng trong quá trình lập kế hoạch di chuyển.

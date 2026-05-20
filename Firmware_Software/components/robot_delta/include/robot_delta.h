@@ -10,6 +10,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"  // Thư viện chứa định nghĩa SemaphoreHandle_t
 
+
 typedef struct robot_delta{
     // parameters of the robot
     float A, RF, RE; // mm
