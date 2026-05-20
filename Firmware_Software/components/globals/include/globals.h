@@ -20,16 +20,16 @@ typedef struct gripper_delta gripper_object_t;
 
 // -------------------------Gripper-------------------------
 // Gán chân GPIO cho gripper
-#define GRIPPER 2
+#define GRIPPER 15
 
-#define GRIPPER_TIME_DELAY_MS 1000 // Thời gian delay để đảm bảo gripper đã kịp gắp/thả được vật trước khi tiếp tục thực hiện các bước tiếp theo (ms)
+#define GRIPPER_TIME_DELAY_MS 3000 // Thời gian delay để đảm bảo gripper đã kịp gắp/thả được vật trước khi tiếp tục thực hiện các bước tiếp theo (ms)
 
-#define GRIPPER_DEFAULT_STATE false // Trạng thái nhả mặc định của gripper khi khởi động là false
+#define GRIPPER_DEFAULT_STATE true // Trạng thái nhả mặc định của gripper khi khởi động là true
 
 // --------------------------------------------------
 #define CYCLE_TIME_MS 20.0f // Chu kỳ thời gian cho mỗi bước di chuyển (ms)
 
-#define SPEED_MM_PER_SEC 500.0f // Tốc độ di chuyển max của robot (mm/s)
+#define SPEED_MM_PER_SEC 400.0f // Tốc độ di chuyển max của robot (mm/s)
 
 
 // Khai báo biến toàn cục chứa trạng thái của robot
