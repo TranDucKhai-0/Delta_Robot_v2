@@ -107,7 +107,7 @@ static void _Robot_Automatic(robot_object_t *p_robot)
     p_robot->has_end_effector_target_changed = true;
     xSemaphoreGive(p_robot->lock); // Unlock sau khi đã cập nhật cờ
 
-    // === IN LOG TỌA ĐỘ VỀ HOME ===
+    // === IN LOG TỌA ĐỘ  ===
     // ESP_LOGI(TAG, "Đã tín Tọa độ Auto: MODE: %d | X: %.2f | Y: %.2f | Z: %.2f",
     //                       auto_point.mode, auto_point.x, auto_point.y, auto_point.z);
 
@@ -144,8 +144,7 @@ static void _Robot_Pick_And_Place(robot_object_t *p_robot, point_t *p_point_pick
     const float Z_SAFE = p_robot->Z_MAX - 1.0f;
     const float R = 3.0f; // Bán kính bo góc (mm)
     
-    // TỐC ĐỘ DI CHUYỂN CHUNG (mm/giây)
-    //const float SPEED_MM_PER_SEC = 150.0f; 
+ 
 
     // Các điểm neo chính
     point_t p_home = {.x = 0.0f, .y = 0.0f, .z = Z_SAFE, .mode = MODE_PICK_AND_PLACE};
