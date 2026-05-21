@@ -14,6 +14,8 @@ robot_object_t Robot_Create(const float A, const float RF, const float RE, const
         .Z_MAX = Z_MAX,
         .R2 = R2,
 
+        .is_automatic_mode = false, // mặc định khởi động ở chế độ homing
+
         .has_end_effector_current_changed = false, // mặc định chưa có gì thây đổi
         .has_theta_current_changed = false, // mặc định chưa có gì thây đổi
 

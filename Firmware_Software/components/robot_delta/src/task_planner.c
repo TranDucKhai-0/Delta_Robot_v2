@@ -5,7 +5,6 @@
 #include "robot_delta.h"
 #include "kinematics.h"
 #include "math_until.h"
-#include "trajectory.h"
 #include "execute_orbit.h"
 #include "gripper.h"
 
@@ -16,11 +15,6 @@
 // Định nghĩa một cái tên (TAG) để dễ lọc Log trên terminal
 static const char *TAG = "PLANNER";
 
-static trajectory_t _auto_traj = {0};
-static bool _is_traj_initialized = false;
-
-
-
 static void _Robot_Homing(robot_object_t *p_robot)
 {
     uint8_t homing_step = 50;
@@ -30,6 +24,7 @@ static void _Robot_Homing(robot_object_t *p_robot)
     point_t point_target;                                                                       // chứa kết quả nội suy
 
     xSemaphoreTake(p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
+    p_robot->is_automatic_mode = false;           // Tắt cờ chế độ tự động để Task Automatic không hoạt động
     theta_t theta_current = p_robot->theta_current;
     xSemaphoreGive(p_robot->lock); // Unlock sau khi đã cập nhật cờ
 
@@ -69,58 +64,23 @@ static void _Robot_Homing(robot_object_t *p_robot)
 
         // Ngừng 20ms để cho Task Kinematics thực hiện lệnh và tránh gửi quá nhanh
         vTaskDelay(pdMS_TO_TICKS(20));
-
-    // Cập nhật lại tọa độ hệ Đề Cát (end_effector_current) đồng bộ với góc theta vừa đưa về Home
-    Robot_Setup_Home_Point(p_robot, &theta_home);
     }
+
+    // Cập nhật lại tọa độ hệ Đề Cát đồng bộ với góc theta SAU KHI vòng lặp đã kết thúc
+    Robot_Setup_Home_Point(p_robot, &theta_home);
 }
 
 static void _Robot_Automatic(robot_object_t *p_robot)
 {
-    if (!_is_traj_initialized)
-    {
-        _auto_traj.R = 130.0f;
-        _auto_traj.z = -310.0f;
-        _auto_traj.auto_state = 0;
-
-        Start_Line(&_auto_traj, p_robot, _auto_traj.R, 0.0f, _auto_traj.z, 50);
-
-        _auto_traj.auto_state = 1;
-        _is_traj_initialized = true;
-    }
-
-    point_t auto_point;
-    bool has_next = Get_Next_Point(&_auto_traj, &auto_point);
-
-    if (!has_next)
-    {
-        if (_auto_traj.auto_state == 1 || _auto_traj.auto_state == 2)
-        {
-            Start_Circle(&_auto_traj, 0.0f, 0.0f, _auto_traj.z, _auto_traj.R, 100);
-            _auto_traj.auto_state = 2;
-        }
-        Get_Next_Point(&_auto_traj, &auto_point);
-    }
-
     xSemaphoreTake(p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
-    p_robot->end_effector_target = auto_point;
-    p_robot->has_end_effector_target_changed = true;
-    xSemaphoreGive(p_robot->lock); // Unlock sau khi đã cập nhật cờ
-
-    // === IN LOG TỌA ĐỘ  ===
-    // ESP_LOGI(TAG, "Đã tín Tọa độ Auto: MODE: %d | X: %.2f | Y: %.2f | Z: %.2f",
-    //                       auto_point.mode, auto_point.x, auto_point.y, auto_point.z);
-
-    // Gửi góc theta nội suy đến Task Kinematics để điều khiển động cơ
-    xQueueSend(g_queue_planner_to_kinematics, &auto_point, portMAX_DELAY);
-
-    // Ngừng 20ms để cho Task Kinematics thực hiện lệnh và tránh gửi quá nhanh
-    vTaskDelay(pdMS_TO_TICKS(20));
+    p_robot->is_automatic_mode = true;            // Bật cờ chế độ tự động để Task Automatic hoạt động
+    xSemaphoreGive(p_robot->lock);                // Unlock sau khi đã đọc điểm hiện tại
 }
 
 static void _Robot_Manual(robot_object_t *p_robot, point_t *p_point_target)
 {
     xSemaphoreTake(p_robot->lock, portMAX_DELAY);          // Lock để đảm bảo an toàn khi truy cập vào robot
+    p_robot->is_automatic_mode = false;                    // Tắt cờ chế độ tự động để Task Automatic không hoạt động
     point_t point_current = p_robot->end_effector_current; // Lấy điểm hiện tại của end-effector
     xSemaphoreGive(p_robot->lock);                         // Unlock sau khi đã đọc điểm hiện tại
 
@@ -138,13 +98,21 @@ static void _Robot_Manual(robot_object_t *p_robot, point_t *p_point_target)
     xQueueSend(g_queue_planner_to_kinematics, &point_current, portMAX_DELAY);
 }
 
-static void _Robot_Pick_And_Place(robot_object_t *p_robot, point_t *p_point_pick, point_t *p_point_place) {
-    if (p_robot == NULL || p_point_pick == NULL || p_point_place == NULL) return;
+static void _Robot_Pick_And_Place(robot_object_t *p_robot, point_t *p_point_pick, point_t *p_point_place)
+{
+    if (p_robot == NULL || p_point_pick == NULL || p_point_place == NULL)
+        return;
+
+    // Đặt trạng thái mặc định cho gripper trước khi thực hiện chu trình để đảm bảo nó ở trạng thái nhả
+    Gripper_Default_State(&g_gripper, GRIPPER_DEFAULT_STATE); 
+
+    xSemaphoreTake(p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
+    p_robot->is_automatic_mode = false;           // Tắt cờ chế độ tự động để Task Automatic không hoạt động
+    point_t p_current = p_robot->end_effector_current; // Lấy vị trí thực tế hiện tại của Robot
+    xSemaphoreGive(p_robot->lock);                // Unlock sau khi đã đọc điểm hiện tại
 
     const float Z_SAFE = p_robot->Z_MAX - 1.0f;
     const float R = 3.0f; // Bán kính bo góc (mm)
-    
- 
 
     // Các điểm neo chính
     point_t p_home = {.x = 0.0f, .y = 0.0f, .z = Z_SAFE, .mode = MODE_PICK_AND_PLACE};
@@ -152,42 +120,46 @@ static void _Robot_Pick_And_Place(robot_object_t *p_robot, point_t *p_point_pick
     point_t p_above_place = {.x = p_point_place->x, .y = p_point_place->y, .z = Z_SAFE, .mode = MODE_PICK_AND_PLACE};
     point_t p_A, p_B;
 
+    // DI CHUYỂN AN TOÀN: Đưa robot từ vị trí hiện tại về p_home trước khi bắt đầu chu trình
+    if (!Execute_Linear_Motion(p_robot, p_current, p_home, SPEED_MM_PER_SEC, PROFILE_S_CURVE)) return;
+
     // ------------------------------------------------------------------------
     // CHU TRÌNH 1: TỪ HOME TỚI GẮP (Tăng tốc -> Bay -> Giảm tốc cắm xuống)
     // ------------------------------------------------------------------------
     p_A = Math_Move_Towards(&p_above_pick, &p_home, R);
     p_B = Math_Move_Towards(&p_above_pick, p_point_pick, R);
 
-    Execute_Linear_Motion(p_robot, p_home, p_A, SPEED_MM_PER_SEC, PROFILE_ACCEL);
-    
-    Execute_Bezier_Motion(p_robot, p_A, p_above_pick, p_B, SPEED_MM_PER_SEC, PROFILE_CRUISE);
+    if (!Execute_Linear_Motion(p_robot, p_home, p_A, SPEED_MM_PER_SEC, PROFILE_ACCEL)) return;
 
-    Execute_Linear_Motion(p_robot, p_B, *p_point_pick, SPEED_MM_PER_SEC, PROFILE_DECEL);
+    if (!Execute_Bezier_Motion(p_robot, p_A, p_above_pick, p_B, SPEED_MM_PER_SEC, PROFILE_CRUISE)) return;
 
-    // TODO: BẬT GRIPPER TẠI ĐÂY
+    if (!Execute_Linear_Motion(p_robot, p_B, *p_point_pick, SPEED_MM_PER_SEC, PROFILE_DECEL)) return;
+
+    // BẬT GRIPPER TẠI ĐÂY 
     Gripper_Change(&g_gripper); // thây đổi trạng thái gripper
+ 
 
     // ------------------------------------------------------------------------
     // CHU TRÌNH 2: TỪ GẮP SANG THẢ (Tăng tốc -> Bay -> Giảm tốc cắm xuống)
     // ------------------------------------------------------------------------
-    // 1. Rút lên từ điểm gắp
+    // Rút lên từ điểm gắp
     p_A = Math_Move_Towards(&p_above_pick, p_point_pick, R);
-    Execute_Linear_Motion(p_robot, *p_point_pick, p_A, SPEED_MM_PER_SEC, PROFILE_ACCEL);
+    if (!Execute_Linear_Motion(p_robot, *p_point_pick, p_A, SPEED_MM_PER_SEC, PROFILE_ACCEL)) return;
 
-    // 2. Ôm cua tại đỉnh Gắp hướng về đỉnh Thả
+    // Ôm cua tại đỉnh Gắp hướng về đỉnh Thả
     p_B = Math_Move_Towards(&p_above_pick, &p_above_place, R);
-    Execute_Bezier_Motion(p_robot, p_A, p_above_pick, p_B, SPEED_MM_PER_SEC, PROFILE_CRUISE);
+    if (!Execute_Bezier_Motion(p_robot, p_A, p_above_pick, p_B, SPEED_MM_PER_SEC, PROFILE_CRUISE)) return;
 
-    // 3. Lướt ngang trên không (Chạy Vmax không đổi)
+    // Lướt ngang trên không (Chạy Vmax không đổi)
     p_A = Math_Move_Towards(&p_above_place, &p_above_pick, R);
-    Execute_Linear_Motion(p_robot, p_B, p_A, SPEED_MM_PER_SEC, PROFILE_CRUISE);
+    if (!Execute_Linear_Motion(p_robot, p_B, p_A, SPEED_MM_PER_SEC, PROFILE_CRUISE)) return;
 
-    // 4. Ôm cua tại đỉnh Thả cắm thẳng xuống
+    // Ôm cua tại đỉnh Thả cắm thẳng xuống
     p_B = Math_Move_Towards(&p_above_place, p_point_place, R);
-    Execute_Bezier_Motion(p_robot, p_A, p_above_place, p_B, SPEED_MM_PER_SEC, PROFILE_CRUISE);
+    if (!Execute_Bezier_Motion(p_robot, p_A, p_above_place, p_B, SPEED_MM_PER_SEC, PROFILE_CRUISE)) return;
 
-    // 5. Cắm xuống tới đích và từ từ dừng lại
-    Execute_Linear_Motion(p_robot, p_B, *p_point_place, SPEED_MM_PER_SEC, PROFILE_DECEL);
+    // Cắm xuống tới đích và từ từ dừng lại
+    if (!Execute_Linear_Motion(p_robot, p_B, *p_point_place, SPEED_MM_PER_SEC, PROFILE_DECEL)) return;
 
     // TODO: TẮT GRIPPER TẠI ĐÂY
     Gripper_Change(&g_gripper); // thây đổi trạng thái gripper
@@ -196,20 +168,20 @@ static void _Robot_Pick_And_Place(robot_object_t *p_robot, point_t *p_point_pick
     // CHU TRÌNH 3: TỪ THẢ VỀ LẠI HOME
     // ------------------------------------------------------------------------
     p_A = Math_Move_Towards(&p_above_place, p_point_place, R);
-    Execute_Linear_Motion(p_robot, *p_point_place, p_A, SPEED_MM_PER_SEC, PROFILE_ACCEL);
+    if (!Execute_Linear_Motion(p_robot, *p_point_place, p_A, SPEED_MM_PER_SEC, PROFILE_ACCEL)) return;
 
     p_B = Math_Move_Towards(&p_above_place, &p_home, R);
-    Execute_Bezier_Motion(p_robot, p_A, p_above_place, p_B, SPEED_MM_PER_SEC, PROFILE_CRUISE);
+    if (!Execute_Bezier_Motion(p_robot, p_A, p_above_place, p_B, SPEED_MM_PER_SEC, PROFILE_CRUISE)) return;
 
     p_A = Math_Move_Towards(&p_home, &p_above_place, R);
-    Execute_Linear_Motion(p_robot, p_B, p_A, SPEED_MM_PER_SEC, PROFILE_DECEL);
+    if (!Execute_Linear_Motion(p_robot, p_B, p_A, SPEED_MM_PER_SEC, PROFILE_DECEL)) return;
 }
 
 // =============================Task Planner =============================
 void Robot_Planner_Task(void *pvParameters)
 {
     // Sử dụng cấu trúc "Hộp" chứa cả 2 dạng dữ liệu
-    udp_payload_t payload = {0}; 
+    udp_payload_t payload = {0};
 
     // Khởi tạo gripper với trạng thái nhả trước khi vào vòng lặp vô tận
     Gripper_Init(&g_gripper, GRIPPER_DEFAULT_STATE);
@@ -220,7 +192,7 @@ void Robot_Planner_Task(void *pvParameters)
         xQueueReceive(g_queue_udp_to_planner, &payload, portMAX_DELAY);
 
         // Bóc tách CẤU TRÚC 1 ra để phục vụ Mode 0, 1, 2
-        point_t point_current = payload.target; 
+        point_t point_current = payload.target;
 
         if (point_current.mode == MODE_HOMING)
         {
@@ -237,9 +209,9 @@ void Robot_Planner_Task(void *pvParameters)
         else if (point_current.mode == MODE_PICK_AND_PLACE)
         {
             // Bóc tách CẤU TRÚC 2 ra để phục vụ riêng Mode 3
-            _Robot_Pick_And_Place(g_p_robot, &payload.pick, &payload.place); 
+            _Robot_Pick_And_Place(g_p_robot, &payload.pick, &payload.place);
         }
-        
+
         // Ngừng 20ms để cho task khác trong Core0 hoạt động
         vTaskDelay(pdMS_TO_TICKS(20));
     }

@@ -18,6 +18,13 @@ static void _Gripper_Write_GPIO(gripper_object_t *p_gripper, bool state)
     }
 }
 
+void Gripper_Default_State(gripper_object_t *p_gripper, bool default_state)
+{
+    if (p_gripper == NULL) return;
+
+    _Gripper_Write_GPIO(p_gripper, default_state); // Đặt trạng thái mặc định cho gripper
+}
+
 void Gripper_Init(gripper_object_t *p_gripper, bool initial_state)
 {
     // Reset chân GPIO trước khi cấu hình để đảm bảo nó ở trạng thái mặc định
@@ -26,7 +33,7 @@ void Gripper_Init(gripper_object_t *p_gripper, bool initial_state)
     gpio_set_direction(p_gripper->GPIO_INDX, GPIO_MODE_OUTPUT);
 
     // Thiết lập trạng thái ban đầu cho gripper nhả
-    _Gripper_Write_GPIO(p_gripper, initial_state); 
+    Gripper_Default_State(p_gripper, initial_state);
 }
 
 
