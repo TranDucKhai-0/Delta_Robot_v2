@@ -1,0 +1,960 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<SimscapeMultibodyImportXML version="2.0" xmlns="urn:mathworks:SimscapeMultibody:import" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Created by="" on="05/16/26||13:01:15" using="Simscape Multibody Link Version 7.4" from="SolidWorks 29.5.0"/>
+<ModelUnits mass="kilogram" length="millimeter"/>
+<DataUnits mass="kilogram" length="meter"/>
+<RootAssembly name="Assem_for_matlab" uid="Assem_for_matlab" version="458">
+<AssemblyFile name="Assem_for_matlab.SLDASM" type="SolidWorks Assembly"/>
+<InstanceTree>
+<Instance name="de_tinh-1" uid="de_tinh-1" grounded="true" entityUid="de_tinh*:*Default">
+<Transform>
+<Rotation>1 0 0 0 1 0 0 0 1</Rotation>
+<Translation>0.050745210973595162 0.087952445852010952 0.089981206128898594</Translation>
+</Transform>
+</Instance>
+<Instance name="Canh_tay_thu_dong-1" uid="Canh_tay_thu_dong-1" entityUid="Canh_tay_thu_dong*:*Default">
+<Transform>
+<Rotation>0.99801396405265019 6.3230157337549305e-15 -0.06299307546004923 0.054731359301926595 -0.49508028235412294 0.86712167100881843 -0.031186629585110266 -0.86884723284600618 -0.49409703511654374</Rotation>
+<Translation>0.10205043240158242 -0.21285241846808492 0.066593011172248348</Translation>
+</Transform>
+</Instance>
+<Instance name="Canh_tay_thu_dong-2" uid="Canh_tay_thu_dong-2" entityUid="Canh_tay_thu_dong*:*Default">
+<Transform>
+<Rotation>-0.99801396405265042 5.9318355899222867e-15 0.062993075460045816 -0.054731359301923438 -0.49508028235412155 -0.86712167100881921 0.031186629585108819 -0.86884723284600685 0.49409703511654257</Rotation>
+<Translation>0.016763085297121179 0.024620876591905459 -0.068722314152269176</Translation>
+</Transform>
+</Instance>
+<Instance name="Bi_tron_khop_quay-4" uid="Bi_tron_khop_quay-4" entityUid="Bi_tron_khop_quay*:*Default">
+<Transform>
+<Rotation>-1.402457279940714e-14 1.3606196919939884e-15 -0.99999999999999978 0.51762086415043029 0.85561009869926252 -6.0744348596143727e-15 0.85561009869926252 -0.51762086415043029 -1.2648340104255173e-14</Rotation>
+<Translation>0.093068306725108546 -0.21805085624464821 0.069720605591341717</Translation>
+</Transform>
+</Instance>
+<Instance name="Bi_tron_khop_quay-1" uid="Bi_tron_khop_quay-1" entityUid="Bi_tron_khop_quay*:*Default">
+<Transform>
+<Rotation>0 0 0.99999999999999989 0.35070074143454261 -0.93648758131502308 0 0.93648758131502308 0.35070074143454261 0</Rotation>
+<Translation>0.025745210973595022 0.030264140522855459 -0.070931847896425163</Translation>
+</Transform>
+</Instance>
+<Instance name="Bi_tron_khop_quay-2" uid="Bi_tron_khop_quay-2" entityUid="Bi_tron_khop_quay*:*Default">
+<Transform>
+<Rotation>1.5366193746014272e-16 -1.2787499200754272e-16 -0.99999999999999989 0.94465986732469154 0.32805142137490595 1.0320869256757429e-16 0.32805142137490595 -0.94465986732469154 1.7120738997901297e-16</Rotation>
+<Translation>0.075745210973595017 0.023309176008060851 -0.063807364548249382</Translation>
+</Transform>
+</Instance>
+<Instance name="Bi_tron_khop_quay-3" uid="Bi_tron_khop_quay-3" entityUid="Bi_tron_khop_quay*:*Default">
+<Transform>
+<Rotation>-6.0182648814998384e-15 1.6750643487797955e-15 0.99999999999999989 0.99844530330775472 -0.055740257468776748 6.0744348596123533e-15 0.055740257468776699 0.99844530330775472 -1.1739365523282276e-15</Rotation>
+<Translation>0.04306830672510762 -0.21303842928572428 0.061382241670321407</Translation>
+</Transform>
+</Instance>
+<Instance name="Canh_tay_thu_dong-9" uid="Canh_tay_thu_dong-9" entityUid="Canh_tay_thu_dong*:*Default">
+<Transform>
+<Rotation>0.4459178480999007 -0.80105983568757655 0.39932494587008549 0.13659957409499879 -0.38000550811480682 -0.91484226517989009 0.88458907358333272 0.46249211177121752 -0.060026806065131541</Rotation>
+<Translation>-0.077194316983332636 0.039466018389522801 0.20299299926328643</Translation>
+</Transform>
+</Instance>
+<Instance name="Canh_tay_thu_dong-10" uid="Canh_tay_thu_dong-10" entityUid="Canh_tay_thu_dong*:*Default">
+<Transform>
+<Rotation>-0.44591784809990292 -0.80105983568757644 -0.39932494587008344 -0.13659957409499573 -0.38000550811480621 0.91484226517989076 -0.88458907358333227 0.46249211177121835 0.060026806065134504</Rotation>
+<Translation>-0.00040647813485780363 -0.21457439686865734 0.12726175408165247</Translation>
+</Transform>
+</Instance>
+<Instance name="Canh_tay_thu_dong-7" uid="Canh_tay_thu_dong-7" entityUid="Canh_tay_thu_dong*:*Default">
+<Transform>
+<Rotation>-0.47724522289625354 -0.82990859628247726 -0.28894414518926231 0.081152961295762743 0.28577782003144908 -0.95485351465604473 0.87501496792662581 -0.47914795146647648 -0.069036559226581556</Rotation>
+<Translation>0.20769426387315493 0.049970092480272663 0.16208324424255283</Translation>
+</Transform>
+</Instance>
+<Instance name="Bi_tron_khop_quay-15" uid="Bi_tron_khop_quay-15" entityUid="Bi_tron_khop_quay*:*Default">
+<Transform>
+<Rotation>-0.19487506925723552 0.84381497224331337 0.500000000000004 0.97435360274182969 0.2250223473880244 0 -0.11251117369401308 0.48717680137091873 -0.86602540378443638</Rotation>
+<Translation>0.18234848853188279 0.04800209291797667 0.19482990731289498</Translation>
+</Transform>
+</Instance>
+<Instance name="Canh_tay_thu_dong-8" uid="Canh_tay_thu_dong-8" entityUid="Canh_tay_thu_dong*:*Default">
+<Transform>
+<Rotation>0.47724522289625443 -0.82990859628247704 0.28894414518926126 -0.081152961295761175 0.28577782003144875 0.95485351465604473 -0.87501496792662525 -0.47914795146647698 0.069036559226583097</Rotation>
+<Translation>0.11182503795824043 -0.21407537735346335 0.1706491912217851</Translation>
+</Transform>
+</Instance>
+<Instance name="Bi_tron_khop_quay-17" uid="Bi_tron_khop_quay-17" entityUid="Bi_tron_khop_quay*:*Default">
+<Transform>
+<Rotation>-0.86418109219935024 -0.056489290003903792 0.49999999999999289 0.065228213580173666 -0.9978703724197544 7.9803549848665684e-15 0.4989351862098696 0.032614106790093265 0.8660254037844427</Rotation>
+<Translation>0.0039174735930627954 -0.20785671365349376 0.13504367815655699</Translation>
+</Transform>
+</Instance>
+<Instance name="Bi_tron_khop_quay-16" uid="Bi_tron_khop_quay-16" entityUid="Bi_tron_khop_quay*:*Default">
+<Transform>
+<Rotation>0.68029317859904392 -0.5359115516123959 -0.50000000000000389 0.61881735717049513 0.78553489958405021 1.3921155894713877e-16 0.39276744979202804 -0.30940867858524995 0.86602540378443638</Rotation>
+<Translation>0.21493698441308939 0.044919273880898523 0.15590985726343207</Translation>
+</Transform>
+</Instance>
+<Instance name="Bi_tron_khop_quay-18" uid="Bi_tron_khop_quay-18" entityUid="Bi_tron_khop_quay*:*Default">
+<Transform>
+<Rotation>-0.67246555728866164 0.54570145158359684 -0.50000000000000511 0.63012175993792396 0.77649634104272081 -7.980354984864145e-15 0.38824817052136001 -0.31506087996897053 -0.86602540378443571</Rotation>
+<Translation>0.025605424514331978 -0.21761573057753694 0.18025716077295459</Translation>
+</Transform>
+</Instance>
+<Instance name="Bi_tron_khop_quay-20" uid="Bi_tron_khop_quay-20" entityUid="Bi_tron_khop_quay*:*Default">
+<Transform>
+<Rotation>0.54281546472835884 0.67479728159777208 -0.49999999999999312 0.77918878435779904 -0.62678930936241684 -3.8857805861880479e-16 -0.31339465468120431 -0.38959439217889386 -0.86602540378444282</Rotation>
+<Translation>-0.084918962665019804 0.041683963424160898 0.19717446675802053</Translation>
+</Transform>
+</Instance>
+<Instance name="Bi_tron_khop_quay-19" uid="Bi_tron_khop_quay-19" entityUid="Bi_tron_khop_quay*:*Default">
+<Transform>
+<Rotation>0.83258023922730551 0.23834878906386528 0.49999999999999151 -0.27522147505408667 0.96138085047969035 4.7184478546569153e-16 -0.48069042523983696 -0.13761073752704139 0.86602540378444326</Rotation>
+<Translation>-0.10751849595608289 0.032949027545029298 0.15248728646821319</Translation>
+</Transform>
+</Instance>
+<Instance name="Bi_tron_khop_quay-13" uid="Bi_tron_khop_quay-13" entityUid="Bi_tron_khop_quay*:*Default">
+<Transform>
+<Rotation>0.25485799170651791 0.82767590520886714 0.50000000000000278 0.95571781334821537 -0.2942846602337707 -1.9514685921715223e-15 0.14714233011688452 0.47785890667411085 -0.86602540378443704</Rotation>
+<Translation>0.10297761347352538 -0.21172643507051575 0.17589610194641711</Translation>
+</Transform>
+</Instance>
+<Instance name="Bi_tron_khop_quay-14" uid="Bi_tron_khop_quay-14" entityUid="Bi_tron_khop_quay*:*Default">
+<Transform>
+<Rotation>0.7928068848244918 0.3485071640223229 -0.50000000000000278 -0.40242140992560194 0.91545453673762001 2.0011245983222605e-15 0.45772726836881333 0.20121070496280055 0.86602540378443704</Rotation>
+<Translation>0.13061304155005127 -0.21838000065385854 0.13411639686660784</Translation>
+</Transform>
+</Instance>
+<Instance name="De_dong-1" uid="De_dong-1" entityUid="De_dong*:*Default">
+<Transform>
+<Rotation>0.86602540378443693 -0.500000000000003 6.1455188005955166e-15 8.1555770260861231e-15 1.8348361955060522e-15 -1 0.50000000000000311 0.86602540378443682 5.6668032739159236e-15</Rotation>
+<Translation>0.068068306725107719 -0.20934500070180206 0.12687369083851402</Translation>
+</Transform>
+</Instance>
+<Instance name="Canh_tay_chu_dong-3" uid="Canh_tay_chu_dong-3" entityUid="Canh_tay_chu_dong*:*Default">
+<Transform>
+<Rotation>-0.8065227973215755 0.31546945557466477 0.50000000000000522 0.36427275019427596 0.93129230828236675 -9.9139446652074525e-16 -0.4656461541411886 0.18213637509713904 -0.86602540378443571</Rotation>
+<Translation>0.19948947087918786 0.049239715828813882 0.17585874462580492</Translation>
+</Transform>
+</Instance>
+<Instance name="Canh_tay_chu_dong-2" uid="Canh_tay_chu_dong-2" entityUid="Canh_tay_chu_dong*:*Default">
+<Transform>
+<Rotation>0 0 -1 0.56532489188656776 0.8248683328952815 0 0.8248683328952815 -0.56532489188656776 0</Rotation>
+<Translation>0.050745210973595016 0.025113458825622832 -0.069002993818535183</Translation>
+</Transform>
+</Instance>
+<Instance name="Canh_tay_chu_dong-1" uid="Canh_tay_chu_dong-1" entityUid="Canh_tay_chu_dong*:*Default">
+<Transform>
+<Rotation>0.77076053635633679 -0.39487744376667056 0.49999999999999228 0.45596519691119486 0.88999760629213809 -4.5493123157491766e-16 -0.44499880314606177 0.22798259845559415 0.86602540378444326</Rotation>
+<Translation>-0.09370757761623176 0.038236622222667591 0.17338106250642568</Translation>
+</Transform>
+</Instance>
+</InstanceTree>
+<Constraints>
+<Concentric name="Concentric4">
+<ConstraintGeometry geomType="sphere">
+<InstancePath>
+<Uid>Canh_tay_thu_dong-1</Uid>
+</InstancePath>
+<Position>-0.0089999999999999941 0 0.27500000000000002</Position>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="sphere">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-2</Uid>
+</InstancePath>
+<Position>0 0.005499999999999991 0</Position>
+</ConstraintGeometry>
+</Concentric>
+<Concentric name="Concentric5">
+<ConstraintGeometry geomType="sphere">
+<InstancePath>
+<Uid>Canh_tay_thu_dong-2</Uid>
+</InstancePath>
+<Position>-0.0090000000000000045 0 0</Position>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="sphere">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-1</Uid>
+</InstancePath>
+<Position>0 0.0054999999999999979 0</Position>
+</ConstraintGeometry>
+</Concentric>
+<Concentric name="Concentric6">
+<ConstraintGeometry geomType="sphere">
+<InstancePath>
+<Uid>Canh_tay_thu_dong-1</Uid>
+</InstancePath>
+<Position>-0.009000000000000008 0 0</Position>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="sphere">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-4</Uid>
+</InstancePath>
+<Position>0 0.0055000000000000326 0</Position>
+</ConstraintGeometry>
+</Concentric>
+<Concentric name="Concentric7">
+<ConstraintGeometry geomType="sphere">
+<InstancePath>
+<Uid>Canh_tay_thu_dong-2</Uid>
+</InstancePath>
+<Position>-0.0090000000000000045 0 0.27499999999999997</Position>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="sphere">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-3</Uid>
+</InstancePath>
+<Position>0 0.0054999999999999771 0</Position>
+</ConstraintGeometry>
+</Concentric>
+<Coincident name="Coincident7">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Canh_tay_thu_dong-1</Uid>
+</InstancePath>
+<Position>-0.0155 -0.0014999999999999944 0.034999999999999976</Position>
+<Axis>0 -1.0000000000000002 0</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Canh_tay_thu_dong-2</Uid>
+</InstancePath>
+<Position>-0.015500000000000003 -0.0014999999999999944 0.034999999999999996</Position>
+<Axis>0 -1.0000000000000002 -1.1102230246251565e-16</Axis>
+</ConstraintGeometry>
+</Coincident>
+<Concentric name="Concentric13">
+<ConstraintGeometry geomType="sphere">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-19</Uid>
+</InstancePath>
+<Position>0 0.005499999999999991 0</Position>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="sphere">
+<InstancePath>
+<Uid>Canh_tay_thu_dong-10</Uid>
+</InstancePath>
+<Position>-0.009000000000000008 0 0.27500000000000002</Position>
+</ConstraintGeometry>
+</Concentric>
+<Concentric name="Concentric14">
+<ConstraintGeometry geomType="sphere">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-20</Uid>
+</InstancePath>
+<Position>0 0.0055000000000000326 0</Position>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="sphere">
+<InstancePath>
+<Uid>Canh_tay_thu_dong-9</Uid>
+</InstancePath>
+<Position>-0.009000000000000008 0 0</Position>
+</ConstraintGeometry>
+</Concentric>
+<Concentric name="Concentric15">
+<ConstraintGeometry geomType="sphere">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-18</Uid>
+</InstancePath>
+<Position>0 0.0054999999999999494 0</Position>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="sphere">
+<InstancePath>
+<Uid>Canh_tay_thu_dong-9</Uid>
+</InstancePath>
+<Position>-0.0090000000000000357 0 0.27500000000000002</Position>
+</ConstraintGeometry>
+</Concentric>
+<Concentric name="Concentric16">
+<ConstraintGeometry geomType="sphere">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-17</Uid>
+</InstancePath>
+<Position>0 0.0055000000000000049 0</Position>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="sphere">
+<InstancePath>
+<Uid>Canh_tay_thu_dong-10</Uid>
+</InstancePath>
+<Position>-0.009000000000000008 0 0</Position>
+</ConstraintGeometry>
+</Concentric>
+<Coincident name="Coincident13">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Canh_tay_thu_dong-9</Uid>
+</InstancePath>
+<Position>-0.015500000000000014 -0.0015000000000000013 0.035000000000000003</Position>
+<Axis>-1.1102230246251565e-16 -1 0</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Canh_tay_thu_dong-10</Uid>
+</InstancePath>
+<Position>-0.0155 -0.0014999999999999736 0.035000000000000031</Position>
+<Axis>1.1102230246251565e-16 -1 -2.6020852139652106e-16</Axis>
+</ConstraintGeometry>
+</Coincident>
+<Concentric name="Concentric22">
+<ConstraintGeometry geomType="sphere">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-16</Uid>
+</InstancePath>
+<Position>0 0.0055000000000000049 0</Position>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="sphere">
+<InstancePath>
+<Uid>Canh_tay_thu_dong-7</Uid>
+</InstancePath>
+<Position>-0.0089999999999999802 0 0</Position>
+</ConstraintGeometry>
+</Concentric>
+<Concentric name="Concentric28">
+<ConstraintGeometry geomType="sphere">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-15</Uid>
+</InstancePath>
+<Position>0 0.0055000000000000049 0</Position>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="sphere">
+<InstancePath>
+<Uid>Canh_tay_thu_dong-8</Uid>
+</InstancePath>
+<Position>-0.0089999999999999802 0 0.27500000000000002</Position>
+</ConstraintGeometry>
+</Concentric>
+<Concentric name="Concentric23">
+<ConstraintGeometry geomType="sphere">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-13</Uid>
+</InstancePath>
+<Position>0 0.0055000000000000326 0</Position>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="sphere">
+<InstancePath>
+<Uid>Canh_tay_thu_dong-8</Uid>
+</InstancePath>
+<Position>-0.0089999999999999941 0 0</Position>
+</ConstraintGeometry>
+</Concentric>
+<Concentric name="Concentric24">
+<ConstraintGeometry geomType="sphere">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-14</Uid>
+</InstancePath>
+<Position>0 0.0055000000000000326 0</Position>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="sphere">
+<InstancePath>
+<Uid>Canh_tay_thu_dong-7</Uid>
+</InstancePath>
+<Position>-0.0089999999999999941 0 0.27500000000000008</Position>
+</ConstraintGeometry>
+</Concentric>
+<Coincident name="Coincident19">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Canh_tay_thu_dong-7</Uid>
+</InstancePath>
+<Position>-0.0155 -0.0015000000000000013 0.035000000000000003</Position>
+<Axis>0 -1 0</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Canh_tay_thu_dong-8</Uid>
+</InstancePath>
+<Position>-0.015499999999999986 -0.0015000000000000013 0.035000000000000031</Position>
+<Axis>0 -1 -1.3183898417423734e-16</Axis>
+</ConstraintGeometry>
+</Coincident>
+<Concentric name="Concentric29">
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-17</Uid>
+</InstancePath>
+<Position>0 0.0054999999999999771 0.020000000000000018</Position>
+<Axis>0 0 -1.0000000000000002</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>De_dong-1</Uid>
+</InstancePath>
+<Position>-0.034330127018922463 0.04946152422706615 0.0039999999999999758</Position>
+<Axis>-0.86602540378443649 -0.50000000000000389 0</Axis>
+</ConstraintGeometry>
+</Concentric>
+<Concentric name="Concentric30">
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-18</Uid>
+</InstancePath>
+<Position>0 0.0054999999999999771 0.020000000000000018</Position>
+<Axis>0 0 -1</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="circle">
+<InstancePath>
+<Uid>De_dong-1</Uid>
+</InstancePath>
+<Position>-0.015277568135663971 0.060461524227066465 0.0039999999999999758</Position>
+<Axis>-0.86602540378444348 -0.49999999999999184 0</Axis>
+</ConstraintGeometry>
+</Concentric>
+<Coincident name="Coincident21">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-17</Uid>
+</InstancePath>
+<Position>0 0.0054999999999999771 0.020000000000000018</Position>
+<Axis>0 0 1.0000000000000002</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>De_dong-1</Uid>
+</InstancePath>
+<Position>-0.034330127018922463 0.04946152422706615 0.0039999999999999758</Position>
+<Axis>-0.8660254037844366 -0.500000000000004 0</Axis>
+</ConstraintGeometry>
+</Coincident>
+<Coincident name="Coincident22">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-18</Uid>
+</InstancePath>
+<Position>0 0.0054999999999999771 0.020000000000000018</Position>
+<Axis>0 0 1</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>De_dong-1</Uid>
+</InstancePath>
+<Position>-0.025669872981077257 0.054461524227066543 0.0039999999999999758</Position>
+<Axis>0.86602540378444348 0.49999999999999184 0</Axis>
+</ConstraintGeometry>
+</Coincident>
+<Coincident name="Coincident25">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-13</Uid>
+</InstancePath>
+<Position>0 0.0055000000000000049 0.01999999999999999</Position>
+<Axis>0 0 1</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>De_dong-1</Uid>
+</InstancePath>
+<Position>0.060000000000000026 0.00500000000000006 0.0040000000000000036</Position>
+<Axis>0 1 0</Axis>
+</ConstraintGeometry>
+</Coincident>
+<Coincident name="Coincident26">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-14</Uid>
+</InstancePath>
+<Position>0 0.0055000000000000326 0.020000000000000018</Position>
+<Axis>0 0 1</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>De_dong-1</Uid>
+</InstancePath>
+<Position>0.060000000000000026 -0.0050000000000000322 0.0039999999999999758</Position>
+<Axis>0 -1 0</Axis>
+</ConstraintGeometry>
+</Coincident>
+<Concentric name="Concentric34">
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-14</Uid>
+</InstancePath>
+<Position>0 0.0055000000000000326 0.020000000000000018</Position>
+<Axis>0 0 -1</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>De_dong-1</Uid>
+</InstancePath>
+<Position>0.060000000000000026 -0.0050000000000000322 0.0039999999999999758</Position>
+<Axis>0 -1 0</Axis>
+</ConstraintGeometry>
+</Concentric>
+<Concentric name="Concentric35">
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-13</Uid>
+</InstancePath>
+<Position>0 0.0055000000000000049 0.01999999999999999</Position>
+<Axis>0 0 -1</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>De_dong-1</Uid>
+</InstancePath>
+<Position>0.060000000000000026 0.00500000000000006 0.0040000000000000036</Position>
+<Axis>0 1 0</Axis>
+</ConstraintGeometry>
+</Concentric>
+<Coincident name="Coincident27">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-4</Uid>
+</InstancePath>
+<Position>0 0.0055000000000000326 0.020000000000000004</Position>
+<Axis>0 0 0.99999999999999978</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>De_dong-1</Uid>
+</InstancePath>
+<Position>-0.025669872981077244 -0.054461524227066578 0.0040000000000000036</Position>
+<Axis>0.86602540378444337 -0.49999999999999184 0</Axis>
+</ConstraintGeometry>
+</Coincident>
+<Coincident name="Coincident28">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-3</Uid>
+</InstancePath>
+<Position>0 0.005499999999999991 0.01999999999999999</Position>
+<Axis>0 1.6436234867427285e-16 0.99999999999999989</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>De_dong-1</Uid>
+</InstancePath>
+<Position>-0.034330127018922449 -0.049461524227066123 0.0040000000000000036</Position>
+<Axis>-0.86602540378443638 0.50000000000000389 0</Axis>
+</ConstraintGeometry>
+</Coincident>
+<Concentric name="Concentric36">
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-3</Uid>
+</InstancePath>
+<Position>0 0.005499999999999991 0.01999999999999999</Position>
+<Axis>0 -1.6436234867427285e-16 -0.99999999999999989</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>De_dong-1</Uid>
+</InstancePath>
+<Position>-0.034330127018922449 -0.049461524227066123 0.0040000000000000036</Position>
+<Axis>-0.86602540378443638 0.50000000000000389 0</Axis>
+</ConstraintGeometry>
+</Concentric>
+<Concentric name="Concentric37">
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-4</Uid>
+</InstancePath>
+<Position>0 0.0055000000000000326 0.020000000000000004</Position>
+<Axis>0 0 -0.99999999999999978</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>De_dong-1</Uid>
+</InstancePath>
+<Position>-0.025669872981077244 -0.054461524227066578 0.0040000000000000036</Position>
+<Axis>0.86602540378444337 -0.4999999999999919 0</Axis>
+</ConstraintGeometry>
+</Concentric>
+<Concentric name="Concentric38">
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>de_tinh-1</Uid>
+</InstancePath>
+<Position>-0.065961524227066373 0.0050000000000000044 0.0057512886940351005</Position>
+<Axis>0.49999999999999195 0 0.86602540378444326</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>Canh_tay_chu_dong-1</Uid>
+</InstancePath>
+<Position>0.12 0 0.030000000000000041</Position>
+<Axis>-1.1102230246251565e-16 1.1102230246251565e-16 -1.0000000000000002</Axis>
+</ConstraintGeometry>
+</Concentric>
+<Coincident name="Coincident29">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>de_tinh-1</Uid>
+</InstancePath>
+<Position>-0.038301270189222254 0 0.033660254037844034</Position>
+<Axis>-0.49999999999999317 0 -0.86602540378444259</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Canh_tay_chu_dong-1</Uid>
+</InstancePath>
+<Position>0 0 0.010000000000000023</Position>
+<Axis>1.1102230246251565e-16 -1.1102230246251565e-16 1.0000000000000002</Axis>
+</ConstraintGeometry>
+</Coincident>
+<Concentric name="Concentric39">
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-20</Uid>
+</InstancePath>
+<Position>0 0.0055000000000000049 0.020000000000000018</Position>
+<Axis>0 0 -1</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>Canh_tay_chu_dong-1</Uid>
+</InstancePath>
+<Position>0 0 0.0049999999999999906</Position>
+<Axis>1.1102230246251565e-16 -1.1102230246251565e-16 1.0000000000000002</Axis>
+</ConstraintGeometry>
+</Concentric>
+<Coincident name="Coincident30">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-20</Uid>
+</InstancePath>
+<Position>0 0.0055000000000000049 0.020000000000000018</Position>
+<Axis>0 0 1</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Canh_tay_chu_dong-1</Uid>
+</InstancePath>
+<Position>0 0 0.0049999999999999906</Position>
+<Axis>1.1102230246251565e-16 -1.1102230246251565e-16 1.0000000000000002</Axis>
+</ConstraintGeometry>
+</Coincident>
+<Concentric name="Concentric40">
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-19</Uid>
+</InstancePath>
+<Position>0 0.0054999999999999979 0.020000000000000018</Position>
+<Axis>0 0 -0.99999999999999978</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>Canh_tay_chu_dong-1</Uid>
+</InstancePath>
+<Position>0 0 -0.0049999999999999906</Position>
+<Axis>-1.1102230246251565e-16 1.1102230246251565e-16 -1.0000000000000002</Axis>
+</ConstraintGeometry>
+</Concentric>
+<Coincident name="Coincident31">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-19</Uid>
+</InstancePath>
+<Position>0 0.0054999999999999979 0.020000000000000018</Position>
+<Axis>0 0 0.99999999999999978</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Canh_tay_chu_dong-1</Uid>
+</InstancePath>
+<Position>0 0 -0.0049999999999999906</Position>
+<Axis>-1.1102230246251565e-16 1.1102230246251565e-16 -1.0000000000000002</Axis>
+</ConstraintGeometry>
+</Coincident>
+<Concentric name="Concentric41">
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>de_tinh-1</Uid>
+</InstancePath>
+<Position>0.037961524227066071 0.0050000000000000044 0.054248711305964481</Position>
+<Axis>0.500000000000004 0 -0.86602540378443627</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>Canh_tay_chu_dong-3</Uid>
+</InstancePath>
+<Position>0.12000000000000002 0 0.029999999999999999</Position>
+<Axis>0 1.6653345369377348e-16 -0.99999999999999989</Axis>
+</ConstraintGeometry>
+</Concentric>
+<Coincident name="Coincident32">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>de_tinh-1</Uid>
+</InstancePath>
+<Position>0.048301270189221868 0 0.016339745962155844</Position>
+<Axis>-0.50000000000000289 0 0.86602540378443704</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Canh_tay_chu_dong-3</Uid>
+</InstancePath>
+<Position>0 0 0.0099999999999999811</Position>
+<Axis>0 -1.6653345369377348e-16 0.99999999999999989</Axis>
+</ConstraintGeometry>
+</Coincident>
+<Concentric name="Concentric42">
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-16</Uid>
+</InstancePath>
+<Position>0 0.0055000000000000326 0.019999999999999976</Position>
+<Axis>1.1102230246251565e-16 -1.6653345369377348e-16 -1</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>Canh_tay_chu_dong-3</Uid>
+</InstancePath>
+<Position>0 0 0.0050000000000000044</Position>
+<Axis>0 -1.6653345369377348e-16 0.99999999999999989</Axis>
+</ConstraintGeometry>
+</Concentric>
+<Coincident name="Coincident33">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-16</Uid>
+</InstancePath>
+<Position>0 0.0055000000000000326 0.019999999999999976</Position>
+<Axis>-1.1102230246251565e-16 1.6653345369377348e-16 1</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Canh_tay_chu_dong-3</Uid>
+</InstancePath>
+<Position>0 0 0.0050000000000000044</Position>
+<Axis>0 -1.6653345369377348e-16 0.99999999999999989</Axis>
+</ConstraintGeometry>
+</Coincident>
+<Concentric name="Concentric43">
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-15</Uid>
+</InstancePath>
+<Position>0 0.0055000000000000049 0.01999999999999999</Position>
+<Axis>0 0 -1</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>Canh_tay_chu_dong-3</Uid>
+</InstancePath>
+<Position>0 0 -0.0050000000000000044</Position>
+<Axis>0 1.6653345369377348e-16 -0.99999999999999989</Axis>
+</ConstraintGeometry>
+</Concentric>
+<Coincident name="Coincident34">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-15</Uid>
+</InstancePath>
+<Position>0 0.0055000000000000049 0.01999999999999999</Position>
+<Axis>0 0 1</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Canh_tay_chu_dong-3</Uid>
+</InstancePath>
+<Position>0 0 -0.0050000000000000044</Position>
+<Axis>0 1.6653345369377348e-16 -0.99999999999999989</Axis>
+</ConstraintGeometry>
+</Coincident>
+<Concentric name="Concentric44">
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>de_tinh-1</Uid>
+</InstancePath>
+<Position>0.027999999999999997 0.0050000000000000044 -0.059999999999999998</Position>
+<Axis>-1 0 0</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>Canh_tay_chu_dong-2</Uid>
+</InstancePath>
+<Position>0.12000000000000005 0 0.029999999999999999</Position>
+<Axis>0 0 -1</Axis>
+</ConstraintGeometry>
+</Concentric>
+<Coincident name="Coincident35">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>de_tinh-1</Uid>
+</InstancePath>
+<Position>-0.009999999999999995 0 -0.050000000000000003</Position>
+<Axis>1 0 -1.3877787807814467e-15</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Canh_tay_chu_dong-2</Uid>
+</InstancePath>
+<Position>0 0 0.010000000000000002</Position>
+<Axis>0 0 1</Axis>
+</ConstraintGeometry>
+</Coincident>
+<Concentric name="Concentric45">
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-1</Uid>
+</InstancePath>
+<Position>0 0.0054999999999999979 0.01999999999999999</Position>
+<Axis>0 0 -0.99999999999999989</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>Canh_tay_chu_dong-2</Uid>
+</InstancePath>
+<Position>0 0 0.0049999999999999975</Position>
+<Axis>0 0 1</Axis>
+</ConstraintGeometry>
+</Concentric>
+<Coincident name="Coincident36">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-1</Uid>
+</InstancePath>
+<Position>0 0.0054999999999999979 0.01999999999999999</Position>
+<Axis>0 0 0.99999999999999989</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Canh_tay_chu_dong-2</Uid>
+</InstancePath>
+<Position>0 0 0.0049999999999999975</Position>
+<Axis>0 0 1</Axis>
+</ConstraintGeometry>
+</Coincident>
+<Concentric name="Concentric46">
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-2</Uid>
+</InstancePath>
+<Position>0 0.0055000000000000049 0.01999999999999999</Position>
+<Axis>0 0 -0.99999999999999989</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>Canh_tay_chu_dong-2</Uid>
+</InstancePath>
+<Position>0 0 -0.0049999999999999975</Position>
+<Axis>0 0 -1</Axis>
+</ConstraintGeometry>
+</Concentric>
+<Coincident name="Coincident37">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Bi_tron_khop_quay-2</Uid>
+</InstancePath>
+<Position>0 0.0055000000000000049 0.01999999999999999</Position>
+<Axis>0 0 0.99999999999999989</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>Canh_tay_chu_dong-2</Uid>
+</InstancePath>
+<Position>0 0 -0.0049999999999999975</Position>
+<Axis>0 0 -1</Axis>
+</ConstraintGeometry>
+</Coincident>
+</Constraints>
+<Frames>
+</Frames>
+</RootAssembly>
+<Assemblies>
+</Assemblies>
+<Parts>
+<Part name="Bi_tron_khop_quay" uid="Bi_tron_khop_quay*:*Default" version="136">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="Bi_tron_khop_quay.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.00088146266728039377</Mass>
+<CenterOfMass>0 0.0054999999999999979 0.0026499001950319404</CenterOfMass>
+<Inertia>3.5309402974749592e-08 3.5309404400272181e-08 8.8032944673144882e-09 0 0 0</Inertia>
+</MassProperties>
+<GeometryFile name="Bi_tron_khop_quay_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.792156862745098" g="0.81960784313725488" b="0.93333333333333335" a="1"/>
+<Diffuse r="0.792156862745098" g="0.81960784313725488" b="0.93333333333333335" a="1"/>
+<Specular r="0.396078431372549" g="0.40980392156862744" b="0.46666666666666667" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+<Frames>
+</Frames>
+</Part>
+<Part name="Canh_tay_chu_dong" uid="Canh_tay_chu_dong*:*Default" version="928">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="Canh_tay_chu_dong.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.045884299512680943</Mass>
+<CenterOfMass>0.073021151112933586 0.0023597859853651832 0.00010955349537549013</CenterOfMass>
+<Inertia>4.5193102902116921e-06 0.00010267555237097367 0.00010304791058259573 1.1859990484470953e-08 -2.3614281043985772e-07 1.980013661361116e-08</Inertia>
+</MassProperties>
+<GeometryFile name="Canh_tay_chu_dong_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.792156862745098" g="0.81960784313725488" b="0.93333333333333335" a="1"/>
+<Diffuse r="0.792156862745098" g="0.81960784313725488" b="0.93333333333333335" a="1"/>
+<Specular r="0.396078431372549" g="0.40980392156862744" b="0.46666666666666667" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+<Frames>
+</Frames>
+</Part>
+<Part name="Canh_tay_thu_dong" uid="Canh_tay_thu_dong*:*Default" version="890">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="Canh_tay_thu_dong.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.039551206025213309</Mass>
+<CenterOfMass>-0.0020101830234884421 6.9791890900123556e-10 0.13750000000000001</CenterOfMass>
+<Inertia>0.00026304785745874049 0.00026369277202132355 1.2990997944254084e-06 -2.9568149268145911e-10 0 -3.4301614036785526e-13</Inertia>
+</MassProperties>
+<GeometryFile name="Canh_tay_thu_dong_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.792156862745098" g="0.81960784313725488" b="0.93333333333333335" a="1"/>
+<Diffuse r="0.792156862745098" g="0.81960784313725488" b="0.93333333333333335" a="1"/>
+<Specular r="0.396078431372549" g="0.40980392156862744" b="0.46666666666666667" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+<Frames>
+</Frames>
+</Part>
+<Part name="De_dong" uid="De_dong*:*Default" version="1421">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="De_dong.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.089072294245554379</Mass>
+<CenterOfMass>2.1987009051794255e-09 4.2453242426666974e-09 0.006473761902194103</CenterOfMass>
+<Inertia>8.153244372192161e-05 8.1532406348438233e-05 0.00015945274002053208 -5.9352890782556122e-12 2.8172148376197908e-12 7.1394582078202541e-12</Inertia>
+</MassProperties>
+<GeometryFile name="De_dong_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.69803921568627447" g="0.69803921568627447" b="0.69803921568627447" a="1"/>
+<Diffuse r="0.69803921568627447" g="0.69803921568627447" b="0.69803921568627447" a="1"/>
+<Specular r="0.69803921568627447" g="0.69803921568627447" b="0.69803921568627447" a="1"/>
+<Emissive r="0.20941176470588233" g="0.20941176470588233" b="0.20941176470588233" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+<Frames>
+<Frame name="CS_Eo" uid="CS_Eo">
+<Transform>
+<Rotation>1 0 0 0 -1 0 0 0 -1</Rotation>
+<Translation>0 0 0.0040000000000000001</Translation>
+</Transform>
+</Frame>
+</Frames>
+</Part>
+<Part name="de_tinh" uid="de_tinh*:*Default" version="188">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="de_tinh.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.11752702474038229</Mass>
+<CenterOfMass>-1.8770382577115039e-05 0.0049897215164650998 2.1757136142883525e-05</CenterOfMass>
+<Inertia>0.00011511454372058719 0.00022826472729594726 0.00011511917151390542 -6.4189113058726739e-09 -1.1722100884833918e-08 5.5377426582543381e-09</Inertia>
+</MassProperties>
+<GeometryFile name="de_tinh_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.792156862745098" g="0.81960784313725488" b="0.93333333333333335" a="1"/>
+<Diffuse r="0.792156862745098" g="0.81960784313725488" b="0.93333333333333335" a="1"/>
+<Specular r="0.396078431372549" g="0.40980392156862744" b="0.46666666666666667" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+<Frames>
+<Frame name="CS_Base" uid="CS_Base">
+<Transform>
+<Rotation>0 -1 0 0 0 1 -1 0 0</Rotation>
+<Translation>0 0.0050000000000000001 0</Translation>
+</Transform>
+</Frame>
+</Frames>
+</Part>
+</Parts>
+</SimscapeMultibodyImportXML>
