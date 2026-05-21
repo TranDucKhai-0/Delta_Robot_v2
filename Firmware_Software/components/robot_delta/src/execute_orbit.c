@@ -18,7 +18,7 @@ static float _Apply_Velocity_Profile(float t, velocity_profile_t profile) {
 
 
 // Hàm thực thi chạy đường thẳng
-void Execute_Linear_Motion(robot_object_t *p_robot, point_t p_start, point_t p_end, float target_speed, velocity_profile_t profile) {
+bool Execute_Linear_Motion(robot_object_t *p_robot, point_t p_start, point_t p_end, float target_speed, velocity_profile_t profile) {
     // Tự động tính thời gian dựa trên tốc độ và quãng đường (Đơn vị: mm và mm/s)
     float distance = Math_Calculate_Distance(&p_start, &p_end);
     uint16_t time_ms = (uint16_t)((distance / target_speed) * 1000.0f);
@@ -47,10 +47,11 @@ void Execute_Linear_Motion(robot_object_t *p_robot, point_t p_start, point_t p_e
         xQueueSend(g_queue_planner_to_kinematics, &p_next, portMAX_DELAY);
         vTaskDelayUntil(&xLastWakeTime, xFrequency);
     }
+    return true; // Hoàn thành 100% quỹ đạo
 }
 
 // Hàm thực thi chạy bo cua
-void Execute_Bezier_Motion(robot_object_t *p_robot, point_t p_A, point_t p_C, point_t p_B, float target_speed, velocity_profile_t profile) {
+bool Execute_Bezier_Motion(robot_object_t *p_robot, point_t p_A, point_t p_C, point_t p_B, float target_speed, velocity_profile_t profile) {
     // Tự động tính thời gian đi qua cua
     float arc_length = Math_Calculate_Bezier_Length(&p_A, &p_C, &p_B);
     uint16_t time_ms = (uint16_t)((arc_length / target_speed) * 1000.0f);
@@ -62,6 +63,7 @@ void Execute_Bezier_Motion(robot_object_t *p_robot, point_t p_A, point_t p_C, po
     const TickType_t xFrequency = pdMS_TO_TICKS(CYCLE_TIME_MS);
 
     for (uint16_t i = 1; i <= total_steps; i++) {
+
         float t = (float)i / total_steps;
         
         //Ép Profile Vận Tốc
@@ -78,4 +80,5 @@ void Execute_Bezier_Motion(robot_object_t *p_robot, point_t p_A, point_t p_C, po
         xQueueSend(g_queue_planner_to_kinematics, &p_next, portMAX_DELAY);
         vTaskDelayUntil(&xLastWakeTime, xFrequency);
     }
+    return true; // Hoàn thành 100% quỹ đạo
 }

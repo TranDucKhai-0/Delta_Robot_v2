@@ -39,10 +39,14 @@ void Robot_Kinematics_Task(void *pvParameters){
 
             
             xSemaphoreTake(g_p_robot->lock, portMAX_DELAY); // Lock để đảm bảo an toàn khi truy cập vào robot
-            g_p_robot->end_effector_current = point_target; //Cập nhật điểm hiện tại vào Robot
-            g_p_robot->has_end_effector_current_changed = true; // Đặt cờ để báo hiệu rằng điểm hiện tại đã thay đổi
-            g_p_robot->theta_current = theta_target; //Cập nhật điểm hiện tại vào Robot
-            g_p_robot->has_theta_current_changed = true; // Đặt cờ để báo hiệu rằng góc hiện tại đã thay đổi
+            // Chỉ cập nhật tọa độ thực tế nếu tính toán IK thành công (cờ has_theta_target_changed được bật bởi hàm IK)
+            if (g_p_robot->has_theta_target_changed) {
+                g_p_robot->end_effector_current = point_target; 
+                g_p_robot->has_end_effector_current_changed = true; 
+                g_p_robot->theta_current = theta_target; 
+                g_p_robot->has_theta_current_changed = true; 
+                g_p_robot->has_theta_target_changed = false; // Xóa cờ sau khi đã ghi nhận thành công
+            }
             xSemaphoreGive(g_p_robot->lock); // Unlock sau khi đã đọc điểm hiện tại
         }
     }

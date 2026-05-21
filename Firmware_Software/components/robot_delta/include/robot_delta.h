@@ -17,6 +17,8 @@ typedef struct robot_delta{
     // vùng hoạt động hiệu quả
     float Z_MIN, Z_MAX, R2; // R2 là bình phương bán kính hoạt động
 
+    bool is_automatic_mode; // cờ để biết robot đang ở chế độ tự động hay không, có thể dùng để điều chỉnh tốc độ hoặc hành vi của robot trong các task khác nhau
+
     // Các biến cần lock khi đọc/ghi
     // =============================================================
     // trạng thái hiện tại của robot (điều khiển động cơ bằng góc theta này)

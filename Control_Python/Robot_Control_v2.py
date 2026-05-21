@@ -72,9 +72,9 @@ send_count = 0
 MAX_SEND_TIMES = 10
 
 # Rects để bắt sự kiện click chuột vào ô nhập liệu
-rect_box_pick = pygame.Rect(WIDTH // 2 - 320, HEIGHT - 130, 300, 50)
-rect_box_place = pygame.Rect(WIDTH // 2 + 20, HEIGHT - 130, 300, 50)
-
+rect_box_pick = pygame.Rect(WIDTH // 2 - 320, HEIGHT - 120, 300, 50)
+rect_box_place = pygame.Rect(WIDTH // 2 + 20, HEIGHT - 120, 300, 50)
+ 
 # ==============================================================================
 # CÁC HÀM XỬ LÝ LOGIC & DATA
 # ==============================================================================
@@ -325,7 +325,7 @@ while running:
         pygame.draw.rect(screen, (20, 22, 28), rect_box_pick, border_radius=8) # Nền ô
         pygame.draw.rect(screen, pick_color, rect_box_pick, 2, border_radius=8) # Viền ô
         
-        screen.blit(font_sm.render("Điểm GẮP (X Y Z)", True, COLOR_PICK), (rect_box_pick.x, rect_box_pick.y - 25))
+        screen.blit(font_sm.render("Pick (X Y Z)", True, COLOR_PICK), (rect_box_pick.x, rect_box_pick.y - 25))
         txt_p = input_text_pick + (cursor if active_input == "pick" else "")
         screen.blit(font_large.render(txt_p, True, COLOR_TEXT), (rect_box_pick.x + 15, rect_box_pick.y + 10))
 
@@ -334,7 +334,7 @@ while running:
         pygame.draw.rect(screen, (20, 22, 28), rect_box_place, border_radius=8)
         pygame.draw.rect(screen, place_color, rect_box_place, 2, border_radius=8)
         
-        screen.blit(font_sm.render("Điểm THẢ (X Y Z)", True, COLOR_PLACE), (rect_box_place.x, rect_box_place.y - 25))
+        screen.blit(font_sm.render("Place (X Y Z)", True, COLOR_PLACE), (rect_box_place.x, rect_box_place.y - 25))
         txt_l = input_text_place + (cursor if active_input == "place" else "")
         screen.blit(font_large.render(txt_l, True, COLOR_TEXT), (rect_box_place.x + 15, rect_box_place.y + 10))
 
